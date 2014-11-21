@@ -1,0 +1,2 @@
+serviceClass: ask_rep.client.UserService
+path: 540FDAB42C854B5BC173CC6DC77746E7.gwt.rpc

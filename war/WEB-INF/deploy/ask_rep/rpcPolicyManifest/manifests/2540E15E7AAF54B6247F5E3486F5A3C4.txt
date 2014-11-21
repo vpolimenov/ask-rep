@@ -1,0 +1,2 @@
+serviceClass: ask_rep.client.LoginService
+path: 818348AA8FF174068C94A80132579A05.gwt.rpc

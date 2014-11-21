@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+
+  <!-- Servlets -->
+  
+  <servlet>
+    <servlet-name>loginService</servlet-name>
+    <servlet-class>ask_rep.server.LoginServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>loginService</servlet-name>
+    <url-pattern>/ask_rep/login</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>userService</servlet-name>
+    <servlet-class>ask_rep.server.UserServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>userService</servlet-name>
+    <url-pattern>/ask_rep/user</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>sessionService</servlet-name>
+    <servlet-class>ask_rep.server.SessionServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>sessionService</servlet-name>
+    <url-pattern>/ask_rep/session</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>codeExtractionService</servlet-name>
+    <servlet-class>ask_rep.server.CodeExtractionServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>codeExtractionService</servlet-name>
+    <url-pattern>/ask_rep/codeExtract</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>searchService</servlet-name>
+    <servlet-class>ask_rep.server.SearchServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>searchService</servlet-name>
+    <url-pattern>/ask_rep/search</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>home.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>

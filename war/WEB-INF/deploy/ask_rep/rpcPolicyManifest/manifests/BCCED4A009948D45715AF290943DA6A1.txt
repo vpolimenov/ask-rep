@@ -1,0 +1,2 @@
+serviceClass: ask_rep.client.CodeExtractionService
+path: 98ACFC26B5B6B66FB45D84968A356578.gwt.rpc

@@ -1,0 +1,2 @@
+serviceClass: ask_rep.client.SearchService
+path: B2A2073D8F9FF180BE93A7D9A1624685.gwt.rpc

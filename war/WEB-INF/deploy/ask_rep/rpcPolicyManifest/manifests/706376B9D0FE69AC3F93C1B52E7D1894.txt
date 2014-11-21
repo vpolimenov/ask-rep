@@ -1,0 +1,2 @@
+serviceClass: ask_rep.client.SessionService
+path: 342734A8FB338525A14E07E3492E4978.gwt.rpc
