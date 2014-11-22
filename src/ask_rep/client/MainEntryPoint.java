@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -49,7 +50,6 @@ public class MainEntryPoint implements EntryPoint {
 	 * The message displayed to the user when the server cannot be reached or
 	 * returns an error.
 	 */
-	Label lblContentHeaderTitle = new Label();
 	VerticalPanel vpCenterLayout;
 	HorizontalPanel hpCenterLayout;
 	Anchor lnkSignIn;
@@ -127,9 +127,7 @@ public class MainEntryPoint implements EntryPoint {
 					@Override
 					public void onSuccess(Boolean result) {
 						// TODO Auto-generated method stub
-						
-						lblContentHeaderTitle.setText("Upload Files");
-						
+
 						if(result) {
 							loadRepositoryPanel(1);
 						} else {
@@ -281,9 +279,9 @@ public class MainEntryPoint implements EntryPoint {
 		
 		RootPanel.get("mainContent").clear();
 		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
-		RootPanel.get("contentHeaderTitle").clear();
+		RootPanel.get("contentHeadWrapper").clear();
 		
-		lblContentHeaderTitle.setText("Create / Update Repository");
+		HTMLPanel contentTitle = new HTMLPanel("<div id='contentHead'><div id='contentHeaderTitle'>Create / Update Repository</div></div>");
 		
 		HTML lblSubTitle = new HTML();
 		lblSubTitle.setHTML("Create your personal repository and customize it do your liking by adding a folder and sub-folder structure." +
@@ -343,7 +341,7 @@ public class MainEntryPoint implements EntryPoint {
 		vpCenterLayout.add(existRep);
 	
 		RootPanel.get("mainContent").add(vpCenterLayout);
-		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
+		RootPanel.get("contentHeadWrapper").add(contentTitle);
 		
 	}
 	
@@ -382,27 +380,27 @@ public class MainEntryPoint implements EntryPoint {
 		RootPanel.get("mainContent").clear();
 		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
 		
-		if(RootPanel.get("contentHeaderTitle").getWidgetCount() > 0) {
-			RootPanel.get("contentHeaderTitle").clear();
-		}
+		if(RootPanel.get("contentHeadWrapper").getWidgetCount() > 0)
+			RootPanel.get("contentHeadWrapper").clear();
 		
-		lblContentHeaderTitle.setText("Trending Repositories");
-		
+	    HTMLPanel contentTitle = new HTMLPanel("<div id='contentHead'><div id='contentHeaderTitle'>Trending Repositories</div></div>");
+ 
 		Label myLabel = new Label("Trending....");
 		
 		vpCenterLayout = new VerticalPanel();
 		vpCenterLayout.add(myLabel);
 		
 		RootPanel.get("mainContent").add(vpCenterLayout);
-		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
-		
+		RootPanel.get("contentHeadWrapper").add(contentTitle);	
 	}
 	
 	public void loadUploadPanel() {
 		
 		RootPanel.get("mainContent").clear();
 		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
-		RootPanel.get("contentHeaderTitle").clear();
+		RootPanel.get("contentHeadWrapper").clear();
+		
+		HTMLPanel contentTitle = new HTMLPanel("<div id='contentHead'><div id='contentHeaderTitle'>Upload Files</div></div>");
 		
 		final FormPanel objForm = new FormPanel();
 		objForm.setAction(GWT.getModuleBaseURL() + "home");
@@ -458,7 +456,7 @@ public class MainEntryPoint implements EntryPoint {
 		
 		RootPanel.get().add(objForm);
 		RootPanel.get("mainContent").add(vpCenterLayout);
-		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
+		RootPanel.get("contentHeadWrapper").add(contentTitle);
 		
 	}
 	
@@ -466,9 +464,9 @@ public class MainEntryPoint implements EntryPoint {
 		
 		RootPanel.get("mainContent").clear();
 		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
-		RootPanel.get("contentHeaderTitle").clear();
+		RootPanel.get("contentHeadWrapper").clear();
 		
-		lblContentHeaderTitle.setText("Create Files");
+		HTMLPanel contentTitle = new HTMLPanel("<div id='contentHead'><div id='contentHeaderTitle'>Create Files</div></div>");
 		
 		vpCenterLayout = new VerticalPanel();
 		hpCenterLayout = new HorizontalPanel();
@@ -520,7 +518,7 @@ public class MainEntryPoint implements EntryPoint {
 		});
 		
 		RootPanel.get("mainContent").add(hpCenterLayout);
-		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
+		RootPanel.get("contentHeadWrapper").add(contentTitle);
 		
 	}
 	

@@ -30,12 +30,10 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 	
 	        objPrepStatement.executeUpdate();
 	        
-	        ResultSet rs = objPrepStatement.getResultSet();
+	        ResultSet rs = objPrepStatement.getGeneratedKeys();
+	        
 	        if (rs.next()) {
 	        	objRepInfo.setRepositoryID(rs.getInt(1));
-	        	objRepInfo.setName(rs.getString(2));
-	        	objRepInfo.setCreatedDate(rs.getDate(3));
-	        	objRepInfo.setUpdatedDate(rs.getDate(4));
 	        }
         
 		}catch(SQLException e)  {
