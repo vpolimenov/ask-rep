@@ -57,6 +57,16 @@
     <url-pattern>/ask_rep/search</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>repositoryService</servlet-name>
+    <servlet-class>ask_rep.server.RepositoryServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>repositoryService</servlet-name>
+    <url-pattern>/ask_rep/repository</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>home.html</welcome-file>

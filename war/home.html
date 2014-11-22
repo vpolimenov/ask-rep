@@ -13,6 +13,7 @@
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="css/style.css">
 	<link type="text/css" rel="stylesheet" href="ask_rep/sc/skins/EnterpriseBlue/skin_styles.css">
+	<link type="text/css" rel="stylesheet" href="css/highlight/default.css">
     <!--                                           -->
     <!-- Any title is fine                         -->
     <!--                                           -->
@@ -35,8 +36,17 @@
 	<script type="text/javascript" src="ask_rep/sc/modules/ISC_Calendar.js"></script>
 	<script type="text/javascript" src="ask_rep/sc/modules/ISC_DataBinding.js"></script>
 	<script type="text/javascript" src="ask_rep/sc/modules/ISC_Drawing.js"></script>
-	<script type="text/javascript" src="ask_rep/sc/skins/EnterpriseBlue/load_skin.js"></script>
+	<script type="text/javascript" src="ask_rep/sc/skins/EnterpriseBlue/load_skin.js"></script>	
+	<script src="js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<script type="text/javascript">
 	
+		$(document).ready(function() {
+		  $('pre code').each(function(i, block) {
+		    hljs.highlightBlock(block);
+		  });
+		});
+	</script>
   </head>
 
   <!--                                           -->

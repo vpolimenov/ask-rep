@@ -12,7 +12,7 @@
 {
 	margin:0;
 	padding:0;
-	font-size:16px;
+	font-size:18px;
 	font-family: 'PT Sans', sans-serif;
 }
 
@@ -179,14 +179,58 @@ h1
 
 .snippetContainer{
     overflow-y: scroll !important;
-    height:528px !important;
+    height:560px !important;
     margin-left:50px;
 }
 
 .codePanel {
 	background:rgb(245, 245, 245);
 	padding:10px;
-	border:none;
+	border:dotted 2px rgb(153, 201, 198);
+}
+
+.textbox {
+	background:rgb(245, 245, 245);
+	padding:8px;
+	width:350px;
+	margin-bottom:20px;
+	font-size:16px;
+	font-style:italic;
+	border:dotted 2px rgb(153, 201, 198);
+}
+
+.hrStyle {
+    padding: 0;
+    border: none;
+    border-top: medium double #333;
+    color: #333;
+    text-align: center;
+    margin-top:10px;
+    width:1024px;
+}
+.hrStyle:after {
+    content: "OR";
+    display: inline-block;
+    position: relative; 
+    top: -0.7em;  
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: white;
+}
+
+.button {
+	border:none !important;
+	background-color:rgb(153, 201, 198) !important;
+	color:white !important;
+	padding:5px !important;
+	width:150px !important;
+	margin-bottom:20px !important;
+	cursor:pointer !important;
+	background-repeat:none !important;
+	background-size:none !important; 
+	background-image:none !important;
+	font-size:16px !important;
+	font-family: 'PT Sans', sans-serif !important;
 }
 
 .sectionHeaderopened, .sectionHeaderclosed {
@@ -201,12 +245,42 @@ h1
 .instructions {
 	padding:30px;
 	background:rgb(245, 245, 245);
-	border:none;
-	font-size:18px;
+	border:dotted 2px rgb(245, 245, 245);
+	font-size:30px !important;
 	font-style:italic;
+	padding-top:240px;
+	height:290px;
+	width:371px;
+	margin-left:115px;
+	text-align:center;
+	color:rgb(153, 201, 198);
+	font-weight:bold;
 }
 
-#contentHeadWrapper
+.repTitle {
+	border-bottom:1px solid rgb(245, 245, 245);
+	background:none !important;
+	padding:10px;
+	padding-left:0px;
+	width:100%;
+}
+
+.lnkRepTitle {
+	color:rgb(153, 201, 198) !important;
+	text-decoration:none;
+}
+
+.lnkRepTitle:hover {
+	text-decoration:underline;
+}
+
+.created_date {
+	font-style:italic;
+	font-size:11px;
+	margin-top:5px;
+}
+
+.contentTitle
 {
 	width:100%;
 	background:rgb(245, 245, 245);
@@ -238,6 +312,11 @@ h1
 	padding:10px;
 	padding-top:20px;
 	padding-bottom:20px;
+}
+
+#mainContent div {
+	font-family: 'PT Sans', sans-serif;
+	font-size:16px;
 }
 
 #footerWrapper

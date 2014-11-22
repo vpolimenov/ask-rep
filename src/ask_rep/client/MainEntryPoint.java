@@ -1,7 +1,11 @@
 package ask_rep.client;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 import ask_rep.shared.Snippet;
 import ask_rep.shared.SnippetContainer;
@@ -13,14 +17,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.Label;
@@ -47,11 +55,12 @@ public class MainEntryPoint implements EntryPoint {
 	Anchor lnkSignIn;
 	LoginInfo objLoginInfo = null;
 	String language = "Java";
-	
+
 	SectionStack objSectionStack;
 	
 	private int minLength = 100;
 	private int maxLength = 500;
+	private int UserID = 0;
 	
 	/**  
 	 * Create a remote service proxy to talk to the server-side Greeting service.
@@ -70,6 +79,9 @@ public class MainEntryPoint implements EntryPoint {
 	
 	private final CodeExtractionServiceAsync codeExtractor = GWT
 			.create(CodeExtractionService.class);		
+	
+	private final RepositoryServiceAsync objRepService = GWT
+			.create(RepositoryService.class);
 
 	/**
 	 * This is the entry point method.
@@ -83,7 +95,7 @@ public class MainEntryPoint implements EntryPoint {
 	}
 	
 	public void initializeComponents() {
-		
+
 		Anchor lnkTrendingRepositories = new Anchor();
 		lnkTrendingRepositories.setText("Trending Repositories");
 		// Add a handler to close the DialogBox
@@ -117,15 +129,24 @@ public class MainEntryPoint implements EntryPoint {
 						// TODO Auto-generated method stub
 						
 						lblContentHeaderTitle.setText("Upload Files");
-
+						
 						if(result) {
+							loadRepositoryPanel(1);
+						} else {
+							RootPanel.get("mainContent").clear();
+							
+							Label objLabel = new Label("Please sign in to continue.");
+							RootPanel.get("mainContent").add(objLabel);
+						}
+						
+						/* if(result) {
 							loadUploadPanel();
 						} else {
 							RootPanel.get("mainContent").clear();
 							
 							Label objLabel = new Label("Please sign in to upload a file.");
 							RootPanel.get("mainContent").add(objLabel);
-						}
+						}*/
 					}
 				});
 			}
@@ -142,7 +163,6 @@ public class MainEntryPoint implements EntryPoint {
 			}
 		});
 		
-		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
 		RootPanel.get("lnkTrending").add(lnkTrendingRepositories);
 		RootPanel.get("lnkUpload").add(lnkUpload);	
 		RootPanel.get("lnkCreate").add(lnkCreate);
@@ -170,14 +190,14 @@ public class MainEntryPoint implements EntryPoint {
 		    		objUserService.checkUserExists(strEmail, new AsyncCallback<Integer>() {
 		    			
 		    			@Override
-		    			public void onSuccess(Integer userExistsResult) {
+		    			public void onSuccess(final Integer userExistsResult) {
 		    				// TODO Auto-generated method stub
 		    				if(userExistsResult == 0) {
 		    					
 		    					objUserService.insertUser(strName, strEmail, new AsyncCallback<Integer>() {
 		    						
 		    						@Override
-		    						public void onSuccess(Integer insertUserResult) {
+		    						public void onSuccess(final Integer insertUserResult) {
 		    							// TODO Auto-generated method stub
 		    							objSessionService.createSession("UserID", insertUserResult.toString(), new AsyncCallback<Void>() {
 
@@ -191,7 +211,7 @@ public class MainEntryPoint implements EntryPoint {
 											@Override
 											public void onSuccess(Void result) {
 												// TODO Auto-generated method stub
-												
+												UserID = insertUserResult;
 											}
 										});  							
 		    						}
@@ -216,7 +236,7 @@ public class MainEntryPoint implements EntryPoint {
 									@Override
 									public void onSuccess(Void result) {
 										// TODO Auto-generated method stub
-										
+										UserID = userExistsResult;
 									}
 								});				
 		    				}
@@ -257,23 +277,132 @@ public class MainEntryPoint implements EntryPoint {
 	    });
 	}
 	
+	public void loadRepositoryPanel(int option) {
+		
+		RootPanel.get("mainContent").clear();
+		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
+		RootPanel.get("contentHeaderTitle").clear();
+		
+		lblContentHeaderTitle.setText("Create / Update Repository");
+		
+		HTML lblSubTitle = new HTML();
+		lblSubTitle.setHTML("Create your personal repository and customize it do your liking by adding a folder and sub-folder structure." +
+	    					"<p><b>Please specify your repository name in the textfield below and click on 'Create Repository'.</b></p><br/>");
+		
+		final TextBox txtRepositoryName = new TextBox();
+		txtRepositoryName.setText("");
+		txtRepositoryName.setStyleName("textbox");
+		
+		Button btnCreate = new Button("Create Repository");
+		btnCreate.setStylePrimaryName("button");
+		btnCreate.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				if(UserID != 0) {
+					final String strRepository = txtRepositoryName.getText();
+					
+					if(strRepository == null || strRepository.equals("")) {
+						Window.alert("Repository Name empty!");
+					}
+					else {
+					
+						objRepService.insertRepository(strRepository, UserID, new AsyncCallback<RepositoryInfo>() {
+		
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+								Window.alert(caught.getMessage());
+							}
+		
+							@Override
+							public void onSuccess(RepositoryInfo result) {
+								// TODO Auto-generated method stub
+								loadCreateRepPanel(result);					
+							}
+						});
+			
+					}
+				
+				}
+			}
+		});
+		
+		HTML existRep = new HTML();
+		existRep.setHTML("<hr class='hrStyle'>" + 
+						 "<p><b>Select a repository below to " + (option == 1 ? "upload" : "create")+ " your files.</b></p>");
+		
+		//add existing repositories, listview ..
+		
+		
+		vpCenterLayout = new VerticalPanel();
+		vpCenterLayout.add(lblSubTitle);
+		vpCenterLayout.add(txtRepositoryName);
+		vpCenterLayout.add(btnCreate);
+		vpCenterLayout.add(existRep);
+	
+		RootPanel.get("mainContent").add(vpCenterLayout);
+		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
+		
+	}
+	
+	public void loadCreateRepPanel(RepositoryInfo repository) {
+		
+		RootPanel.get("mainContent").clear();
+		RootPanel.get("contentHeaderTitle").clear();
+
+		Anchor lnkRepository = new Anchor();
+		lnkRepository.setText(repository.getName());
+		lnkRepository.setStyleName("lnkRepTitle");
+		lnkRepository.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+	
+		DateTimeFormat objDateFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
+		Label lblCreatedDate = new Label();
+		
+		lblCreatedDate.setText("created on " + objDateFormat.format(repository.getCreatedDate()));
+		lblCreatedDate.setStyleName("created_date");
+		
+		RootPanel.get("contentHeaderTitle").add(lnkRepository);
+		RootPanel.get("contentHeaderTitle").add(lblCreatedDate);
+		RootPanel.get("contentHeadWrapper").setStyleName("repTitle");
+	}
+	
 	
 	public void loadTrendingRepositoryPanel() {
 		
 		RootPanel.get("mainContent").clear();
-
+		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
+		
+		if(RootPanel.get("contentHeaderTitle").getWidgetCount() > 0) {
+			RootPanel.get("contentHeaderTitle").clear();
+		}
+		
 		lblContentHeaderTitle.setText("Trending Repositories");
 		
-		Label myLabel = new Label("Hey");
+		Label myLabel = new Label("Trending....");
 		
 		vpCenterLayout = new VerticalPanel();
 		vpCenterLayout.add(myLabel);
+		
 		RootPanel.get("mainContent").add(vpCenterLayout);
+		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
+		
 	}
 	
 	public void loadUploadPanel() {
 		
 		RootPanel.get("mainContent").clear();
+		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
+		RootPanel.get("contentHeaderTitle").clear();
 		
 		final FormPanel objForm = new FormPanel();
 		objForm.setAction(GWT.getModuleBaseURL() + "home");
@@ -329,11 +458,15 @@ public class MainEntryPoint implements EntryPoint {
 		
 		RootPanel.get().add(objForm);
 		RootPanel.get("mainContent").add(vpCenterLayout);
+		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
+		
 	}
 	
 	public void loadCreatePanel() {
 		
 		RootPanel.get("mainContent").clear();
+		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
+		RootPanel.get("contentHeaderTitle").clear();
 		
 		lblContentHeaderTitle.setText("Create Files");
 		
@@ -346,10 +479,9 @@ public class MainEntryPoint implements EntryPoint {
 		codePanel.setStyleName("codePanel");
 		hpCenterLayout.add(codePanel);
 		
-		Label lblInstructions = new Label();
+		final Label lblInstructions = new Label();
 		lblInstructions.setStyleName("instructions");
-		lblInstructions.setText("Press CTRL + L to search for code snippets ...");
-	
+		lblInstructions.setText("Press CTRL to search for code snippets ...");
 		hpCenterLayout.add(lblInstructions);
 
 		codePanel.addKeyDownHandler(new KeyDownHandler() {
@@ -357,23 +489,44 @@ public class MainEntryPoint implements EntryPoint {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				
-				if (event.getNativeKeyCode() == KeyCodes.KEY_RIGHT) {
-					if (codePanel.getSelectedText() != null && codePanel.getSelectionLength() > 3) {
-						search(language + " " + getRecommendedSite(language) + codePanel.getSelectedText(), codePanel.getSelectedText());
-					}
+				if (event.getNativeKeyCode() == KeyCodes.KEY_CTRL && codePanel.getSelectedText() != null && codePanel.getSelectionLength() > 3) {
+					
+					if(hpCenterLayout.getWidget(1) != null) {
+						
+						hpCenterLayout.remove(1);
+						
+						final HTML lblLoading = new HTML();
+						lblLoading.setHTML("<div class='instructions' style='padding-top:230px; height:300px'><img src='/images/loader.GIF' alt='loading ...' /></div>");
+						hpCenterLayout.add(lblLoading);
+						
+					}	
+									
+					search(language + " " + getRecommendedSite(language) + codePanel.getSelectedText(), codePanel.getSelectedText());
+				}
+				else if(event.getNativeKeyCode() == KeyCodes.KEY_TAB)
+				{
+					      event.preventDefault();
+					      event.stopPropagation();
+					      
+					      if(event.getSource() instanceof TextArea) {
+						        TextArea txtCodePanel = (TextArea) event.getSource();
+						        int index = txtCodePanel.getCursorPos();
+						        String text = txtCodePanel.getText();
+						        txtCodePanel.setText(text.substring(0, index) + "\t" + text.substring(index));
+						        txtCodePanel.setCursorPos(index + 1);
+					      }
 				}
 			}
 		});
 		
 		RootPanel.get("mainContent").add(hpCenterLayout);
+		RootPanel.get("contentHeaderTitle").add(lblContentHeaderTitle);
+		
 	}
 	
 	protected void search(String searchText, final String keyWords) {
 		// TODO Auto-generated method stub
 //        answerPanel.addProgressBar();
-
-				if(hpCenterLayout.getWidget(1) != null)
-					hpCenterLayout.remove(1);
 		
                 linkSearcher.setQueryString(searchText, new AsyncCallback<Void>() {
 
@@ -458,34 +611,51 @@ public class MainEntryPoint implements EntryPoint {
 								}
 							}); 
 					}
-				});
+                });
 	}
 
 	
 	public void displaySnippets(ArrayList<Snippet> snippets) {
 		Collections.sort(snippets);
 		
+		if(hpCenterLayout.getWidget(1) != null) {
+			hpCenterLayout.remove(1);
+		}
+		
 	    objSectionStack = new SectionStack();
 		objSectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		objSectionStack.setWidth("550px");
 		objSectionStack.setStyleName("snippetContainer");
+		
+		if(!snippets.isEmpty()) {
+			for(int i = 1; i <= 20; i++) {	
+						Snippet snippet = snippets.get(i);
+						
+						HTMLFlow objSnippet = new HTMLFlow();
+						objSnippet.setStyleName("snippet");
+						objSnippet.setContents("<pre><code style='font-size:12px' class='" + snippet.getLanguage() + "'>" + snippet.toString() + "</code></pre>");
+						
+						SectionStackSection objSectionStackSection = new SectionStackSection("Snippet " + i);
+						objSectionStackSection.addItem(objSnippet);
+						objSectionStack.addSection(objSectionStackSection);
+					   
+						if(i == 1) 
+							objSectionStackSection.setExpanded(true);
+						else 
+							objSectionStackSection.setExpanded(false);
 
-		for(int i = 1; i <= 20; i++) {
-			
-			Snippet snippet = snippets.get(i);
+			}
+		} else {
 			
 			HTMLFlow objSnippet = new HTMLFlow();
 			objSnippet.setStyleName("snippet");
-			objSnippet.setContents(snippet.toString());
+			objSnippet.setContents("No snippets can be found ...");
 			
-			SectionStackSection objSectionStackSection = new SectionStackSection("Snippet " + i);
+			SectionStackSection objSectionStackSection = new SectionStackSection("Results");
 			objSectionStackSection.addItem(objSnippet);
 			objSectionStack.addSection(objSectionStackSection);
 		   
-			if(i == 1) 
-				objSectionStackSection.setExpanded(true);
-			else 
-				objSectionStackSection.setExpanded(false);
+			objSectionStackSection.setExpanded(true);
 		}
 		
 	    HLayout objHLayout = new HLayout();
