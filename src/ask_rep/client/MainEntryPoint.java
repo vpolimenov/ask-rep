@@ -306,7 +306,7 @@ public class MainEntryPoint implements EntryPoint {
 					}
 					else {
 					
-						objRepService.insertRepository(strRepository, UserID, new AsyncCallback<RepositoryInfo>() {
+						objRepService.insertRepository(strRepository, UserID, new AsyncCallback<Integer>() {
 		
 							@Override
 							public void onFailure(Throwable caught) {
@@ -315,14 +315,28 @@ public class MainEntryPoint implements EntryPoint {
 							}
 		
 							@Override
-							public void onSuccess(RepositoryInfo result) {
+							public void onSuccess(Integer repositoryID) {
 								// TODO Auto-generated method stub
-								loadCreateRepPanel(result);					
+								
+								objRepService.getRepository(repositoryID, new AsyncCallback<RepositoryInfo>() {
+
+									@Override
+									public void onFailure(Throwable caught) {
+										// TODO Auto-generated method stub
+										
+									}
+
+									@Override
+									public void onSuccess(RepositoryInfo result) {
+										// TODO Auto-generated method stub							
+										loadCreateRepPanel(result);		
+									}
+	
+								});	
+												
 							}
-						});
-			
-					}
-				
+						});		
+					}				
 				}
 			}
 		});
@@ -348,11 +362,12 @@ public class MainEntryPoint implements EntryPoint {
 	public void loadCreateRepPanel(RepositoryInfo repository) {
 		
 		RootPanel.get("mainContent").clear();
-		RootPanel.get("contentHeaderTitle").clear();
+		RootPanel.get("contentHeadWrapper").setStyleName("repTitleWrapper");
+		RootPanel.get("contentHeadWrapper").clear();
 
 		Anchor lnkRepository = new Anchor();
 		lnkRepository.setText(repository.getName());
-		lnkRepository.setStyleName("lnkRepTitle");
+
 		lnkRepository.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -367,11 +382,47 @@ public class MainEntryPoint implements EntryPoint {
 		Label lblCreatedDate = new Label();
 		
 		lblCreatedDate.setText("created on " + objDateFormat.format(repository.getCreatedDate()));
-		lblCreatedDate.setStyleName("created_date");
 		
-		RootPanel.get("contentHeaderTitle").add(lnkRepository);
-		RootPanel.get("contentHeaderTitle").add(lblCreatedDate);
-		RootPanel.get("contentHeadWrapper").setStyleName("repTitle");
+		String htmlContentTitle = "";
+		htmlContentTitle =  "<div id='contentHead'>";
+		htmlContentTitle += "<div id='contentHeaderTitle' class='repTitle'>";
+		htmlContentTitle += "<span>" + repository.getUser().getName() + "</span> / <span class='lnkRepTitle'>" + lnkRepository.getHTML() + "</span>";
+		htmlContentTitle += "</div>";
+		htmlContentTitle += "<div class='created_date'>";
+		htmlContentTitle += lblCreatedDate.getText();
+		htmlContentTitle += "</div>";
+		htmlContentTitle += "</div>";
+			
+		HTMLPanel contentTitle = new HTMLPanel(htmlContentTitle);
+		HTMLPanel contentSubTitle = new HTMLPanel("<div class='repNavigate'>navigate / navigate / etc..</div>");
+		
+		String htmlRepGrid = "";
+		htmlRepGrid =  "<div class='repGridWrapper'>";
+		htmlRepGrid += "<table>";
+		
+		
+		
+		htmlRepGrid += "</table>";
+		htmlRepGrid += "</div>";
+		
+		
+		
+		
+		
+		
+		
+		
+		RootPanel.get("contentHeadWrapper").add(contentTitle);
+		RootPanel.get("mainContent").add(contentSubTitle);
+	}
+	
+	public String getFolders(int repositoryID, int parentFolderID) {
+		
+		String structure = "";
+		
+		
+		
+		return "";
 	}
 	
 	

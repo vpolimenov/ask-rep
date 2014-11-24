@@ -9,7 +9,8 @@ public class RepositoryInfo implements Serializable {
 	private int repositoryID;
 	private String name;
 	private Date createdDate;
-	private Date updatedDate;
+	private Date updatedDate;	
+	private UserInfo user;
 	
 	public int getRepositoryID() {
 		return repositoryID;
@@ -35,6 +36,11 @@ public class RepositoryInfo implements Serializable {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
+	public UserInfo getUser() {
+		return user;
+	}
+	public void setUser(UserInfo user) {
+		this.user = user;
+	}
 
 }

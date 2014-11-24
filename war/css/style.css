@@ -257,7 +257,7 @@ h1
 	font-weight:bold;
 }
 
-.repTitle {
+.repTitleWrapper {
 	border-bottom:1px solid rgb(245, 245, 245);
 	background:none !important;
 	padding:10px;
@@ -265,9 +265,20 @@ h1
 	width:100%;
 }
 
+
+.repTitle
+{
+	color:rgb(153, 201, 198) !important;
+	text-decoration:none;
+	padding:0px;
+	font-size:21px;
+}
+
 .lnkRepTitle {
 	color:rgb(153, 201, 198) !important;
 	text-decoration:none;
+	font-weight:bold;
+	cursor:pointer;
 }
 
 .lnkRepTitle:hover {
@@ -276,8 +287,8 @@ h1
 
 .created_date {
 	font-style:italic;
-	font-size:11px;
-	margin-top:5px;
+	font-size:13px;
+	margin-top:2px;
 }
 
 .contentTitle
