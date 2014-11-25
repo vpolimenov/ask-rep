@@ -67,6 +67,26 @@
     <url-pattern>/ask_rep/repository</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>folderService</servlet-name>
+    <servlet-class>ask_rep.server.FolderServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>folderService</servlet-name>
+    <url-pattern>/ask_rep/folder</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>fileService</servlet-name>
+    <servlet-class>ask_rep.server.FileServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>fileService</servlet-name>
+    <url-pattern>/ask_rep/file</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>home.html</welcome-file>

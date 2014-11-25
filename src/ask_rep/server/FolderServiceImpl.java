@@ -51,12 +51,12 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 				objFolderInfo.setParentFolderID(rs.getInt(2));
 				objFolderInfo.setName(rs.getString(3));
 				
-				RepositoryInfo objRepInfo = repService.getRepository(rs.getInt(4));
-				objFolderInfo.setRepository(objRepInfo);
-				
+				//RepositoryInfo objRepInfo = repService.getRepository(rs.getInt(4));
+
 				objFolderInfo.setDatecreated(rs.getDate(5));
 				objFolderInfo.setDateupdated(rs.getDate(6));
-			
+				//objFolderInfo.setRepository(objRepInfo);
+				
 				lstFolders.add(objFolderInfo);
 				
 			}

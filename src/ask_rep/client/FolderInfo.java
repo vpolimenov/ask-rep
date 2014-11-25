@@ -1,8 +1,10 @@
 package ask_rep.client;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class FolderInfo {
+@SuppressWarnings("serial")
+public class FolderInfo implements Serializable {
 	
 	private int folderID;
 	private int parentFolderID;

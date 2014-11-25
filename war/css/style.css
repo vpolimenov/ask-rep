@@ -265,6 +265,10 @@ h1
 	width:100%;
 }
 
+.repGridWrapper {
+	background:rgb(245, 245, 245);
+	padding:5px;
+}
 
 .repTitle
 {
@@ -279,6 +283,16 @@ h1
 	text-decoration:none;
 	font-weight:bold;
 	cursor:pointer;
+}
+
+.lnkItemTitle {
+	cursor: pointer;
+	color:rgb(153, 201, 198) !important;
+	text-decoration:none;
+}
+
+.lnkItemTitle:hover {
+	text-decoration: underline;	
 }
 
 .lnkRepTitle:hover {
@@ -296,6 +310,7 @@ h1
 	width:100%;
 	background:rgb(245, 245, 245);
 }
+
 
 #contentHead
 {

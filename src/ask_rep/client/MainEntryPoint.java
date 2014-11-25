@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import ask_rep.shared.Snippet;
 import ask_rep.shared.SnippetContainer;
@@ -55,6 +56,7 @@ public class MainEntryPoint implements EntryPoint {
 	Anchor lnkSignIn;
 	LoginInfo objLoginInfo = null;
 	String language = "Java";
+	DateTimeFormat objDateFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
 
 	SectionStack objSectionStack;
 	
@@ -82,6 +84,12 @@ public class MainEntryPoint implements EntryPoint {
 	
 	private final RepositoryServiceAsync objRepService = GWT
 			.create(RepositoryService.class);
+	
+	private final FolderServiceAsync objFoldService = GWT
+			.create(FolderService.class);
+	
+	private final FileServiceAsync objFileService = GWT
+			.create(FileService.class);
 
 	/**
 	 * This is the entry point method.
@@ -306,7 +314,7 @@ public class MainEntryPoint implements EntryPoint {
 					}
 					else {
 					
-						objRepService.insertRepository(strRepository, UserID, new AsyncCallback<Integer>() {
+						/*objRepService.insertRepository(strRepository, UserID, new AsyncCallback<Integer>() {
 		
 							@Override
 							public void onFailure(Throwable caught) {
@@ -335,7 +343,22 @@ public class MainEntryPoint implements EntryPoint {
 								});	
 												
 							}
-						});		
+						});	*/
+						
+						objRepService.getRepository(1, new AsyncCallback<RepositoryInfo>() {
+							
+							@Override
+							public void onSuccess(RepositoryInfo result) {
+								// TODO Auto-generated method stub
+								loadCreateRepPanel(result);
+							}
+							
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+								
+							}
+						});
 					}				
 				}
 			}
@@ -378,9 +401,8 @@ public class MainEntryPoint implements EntryPoint {
 			
 		});
 	
-		DateTimeFormat objDateFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
-		Label lblCreatedDate = new Label();
 		
+		Label lblCreatedDate = new Label();
 		lblCreatedDate.setText("created on " + objDateFormat.format(repository.getCreatedDate()));
 		
 		String htmlContentTitle = "";
@@ -397,33 +419,122 @@ public class MainEntryPoint implements EntryPoint {
 		HTMLPanel contentSubTitle = new HTMLPanel("<div class='repNavigate'>navigate / navigate / etc..</div>");
 		
 		String htmlRepGrid = "";
-		htmlRepGrid =  "<div class='repGridWrapper'>";
+		htmlRepGrid =  "<div id='repositoryGrid' class='repGridWrapper'>";
 		htmlRepGrid += "<table>";
-		
-		
-		
+		htmlRepGrid += printFolders(repository.getRepositoryID(), 0).getHTML();
+		htmlRepGrid += printFiles(repository.getRepositoryID(), 0).getHTML();
 		htmlRepGrid += "</table>";
 		htmlRepGrid += "</div>";
-		
-		
-		
-		
-		
-		
-		
+
+		HTMLPanel contentRepository = new HTMLPanel(htmlRepGrid);
 		
 		RootPanel.get("contentHeadWrapper").add(contentTitle);
 		RootPanel.get("mainContent").add(contentSubTitle);
+		RootPanel.get("mainContent").add(contentRepository);
 	}
 	
-	public String getFolders(int repositoryID, int parentFolderID) {
+	public HTML printFolders(int repositoryID, int parentFolderID) {
 		
-		String structure = "";
+		if(RootPanel.get("repositoryGrid table") != null)
+			RootPanel.get("repositoryGrid table").clear();
 		
+	    final HTML hPanel = new HTML();
 		
+		objFoldService.getFolders(repositoryID, parentFolderID, new AsyncCallback<List<FolderInfo>>() {
+			
+			@Override
+			public void onSuccess(List<FolderInfo> result) {
+				// TODO Auto-generated method stub
+				String structure = "";
+				
+				for(int i =0; i < result.size(); i++) {
+					final FolderInfo objFoldInfo = result.get(i);
+					
+					structure += "<tr>";
+					
+					Anchor lnkName = new Anchor();
+					lnkName.setText(objFoldInfo.getName());
+					lnkName.setStyleName("lnkItemTitle");
+
+					lnkName.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+							// TODO Auto-generated method stub
+							printFolders(objFoldInfo.getRepository().getRepositoryID(), objFoldInfo.getFolderID());
+							printFiles(objFoldInfo.getRepository().getRepositoryID(), objFoldInfo.getFolderID());
+						}
+						
+					});
+					
+					structure += "<td>" + lnkName + "</td>";
+					structure += "<td>" + objDateFormat.format(objFoldInfo.getDatecreated()) + "</td>";
+					structure += "</tr>";
+						
+				}
+				
+				hPanel.setHTML(structure);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 		
-		return "";
+		return hPanel;
 	}
+	
+	public HTML printFiles(int repositoryID, int parentFolderID) {
+		
+	    final HTML hPanel = new HTML();
+		
+		objFileService.getFiles(repositoryID, parentFolderID, new AsyncCallback<List<FileInfo>>() {
+			
+			@Override
+			public void onSuccess(List<FileInfo> result) {
+				// TODO Auto-generated method stub
+				String structure = "";
+				
+				for(int i =0; i < result.size(); i++) {
+					final FileInfo objFileInfo = result.get(i);
+					
+					structure += "<tr>";
+					
+					Anchor lnkName = new Anchor();
+					lnkName.setText(objFileInfo.getName() + objFileInfo.getExtension());
+					lnkName.setStyleName("lnkItemTitle");
+
+					lnkName.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
+					
+					structure += "<td>" + lnkName + "</td>";
+					structure += "<td>" + objDateFormat.format(objFileInfo.getDatecreated()) + "</td>";
+					structure += "</tr>";
+						
+				}
+				
+				hPanel.setHTML(structure);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		return hPanel;
+	}
+	
 	
 	
 	public void loadTrendingRepositoryPanel() {
