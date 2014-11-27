@@ -15,7 +15,7 @@ public final class AnswerPanel extends TextArea implements Serializable{
 
 	MainEntryPoint mainEntryPoint;
 	TabPanel containingPane;
-	final TextArea codePanel = new TextArea();;
+	final TextArea codePanel = new TextArea();
 
 	// ProgressEvent progressBar;
 	// int progressBarIndex = -1;

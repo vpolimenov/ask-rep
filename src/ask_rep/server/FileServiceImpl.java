@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import ask_rep.client.FileInfo;
@@ -19,7 +20,9 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 	
 	RepositoryServiceImpl repService = new RepositoryServiceImpl();
 	FolderServiceImpl foldService = new FolderServiceImpl();
-
+	ConnectionServiceImpl connService = new ConnectionServiceImpl();
+	Connection myConnection = connService.getConnection();
+	
 	@Override
 	public List<FileInfo> getFiles(int RepositoryID, int FolderID) {
 		
@@ -27,8 +30,6 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 
 		try {
 			
-			Connection myConnection = ConnectionServiceImpl.getConnection();
-
 			String objStatement = "";
 			
 			if(FolderID > 0) {

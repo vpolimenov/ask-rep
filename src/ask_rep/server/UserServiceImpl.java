@@ -15,14 +15,14 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class UserServiceImpl extends RemoteServiceServlet implements UserService {
+	ConnectionServiceImpl connService = new ConnectionServiceImpl();
+	Connection myConnection = connService.getConnection();
 	
 	public int insertUser(String Name, String Email) {
 	
 		int returnID = 0;
 		
 		try {
-			
-			Connection myConnection = ConnectionServiceImpl.getConnection();
 			
 			String objStatement = "INSERT INTO users (name, email) VALUES( ? , ? )";
 	        PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
@@ -50,8 +50,6 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		
 		try {
 			
-			Connection myConnection = ConnectionServiceImpl.getConnection();
-
 			String objStatement = "SELECT userID FROM users WHERE email = ?";
 			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement);
 			objPrepStatement.setString(1, Email);

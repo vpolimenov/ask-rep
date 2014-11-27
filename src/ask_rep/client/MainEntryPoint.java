@@ -8,9 +8,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.el.Literal;
+
 import ask_rep.shared.Snippet;
 import ask_rep.shared.SnippetContainer;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Element;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,6 +23,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -27,6 +32,7 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -39,6 +45,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
@@ -57,7 +64,6 @@ public class MainEntryPoint implements EntryPoint {
 	LoginInfo objLoginInfo = null;
 	String language = "Java";
 	DateTimeFormat objDateFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
-
 	SectionStack objSectionStack;
 	
 	private int minLength = 100;
@@ -350,7 +356,7 @@ public class MainEntryPoint implements EntryPoint {
 							@Override
 							public void onSuccess(RepositoryInfo result) {
 								// TODO Auto-generated method stub
-								loadCreateRepPanel(result);
+								loadCreateRepPanel(result);							
 							}
 							
 							@Override
@@ -382,12 +388,30 @@ public class MainEntryPoint implements EntryPoint {
 		
 	}
 	
-	public void loadCreateRepPanel(RepositoryInfo repository) {
+	public void loadCreateRepPanel(final RepositoryInfo repository) {
 		
 		RootPanel.get("mainContent").clear();
 		RootPanel.get("contentHeadWrapper").setStyleName("repTitleWrapper");
 		RootPanel.get("contentHeadWrapper").clear();
-
+		
+		final String strNav = "<b style='color:black'>" + repository.getName() + "<b>";
+		
+		Label lblCreatedDate = new Label();
+		lblCreatedDate.setText("created on " + objDateFormat.format(repository.getCreatedDate()));
+		
+		String htmlContentTitle = "";
+		htmlContentTitle =  "<div id='contentHead'>";
+		htmlContentTitle += "<div id='contentHeaderTitle' class='repTitle'>";
+		htmlContentTitle += "<span>" + repository.getUser().getName() + "</span> / <span id='lnkRepository' class='lnkRepTitle'></span>";
+		htmlContentTitle += "</div>";
+		htmlContentTitle += "<div class='created_date'>";
+		htmlContentTitle += lblCreatedDate.getText();
+		htmlContentTitle += "</div>";
+		htmlContentTitle += "</div>";
+			
+		HTMLPanel Navigation = new HTMLPanel(strNav);
+		RootPanel.get("mainContent").add(Navigation);
+		
 		Anchor lnkRepository = new Anchor();
 		lnkRepository.setText(repository.getName());
 
@@ -396,145 +420,235 @@ public class MainEntryPoint implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
+				RootPanel.get("mainContent").remove(1);
+				RootPanel.get("mainContent").getWidget(0).getElement().setInnerHTML(strNav);
 				
+				printRepository(repository.getRepositoryID(), 0, strNav);
 			}
 			
 		});
-	
 		
-		Label lblCreatedDate = new Label();
-		lblCreatedDate.setText("created on " + objDateFormat.format(repository.getCreatedDate()));
-		
-		String htmlContentTitle = "";
-		htmlContentTitle =  "<div id='contentHead'>";
-		htmlContentTitle += "<div id='contentHeaderTitle' class='repTitle'>";
-		htmlContentTitle += "<span>" + repository.getUser().getName() + "</span> / <span class='lnkRepTitle'>" + lnkRepository.getHTML() + "</span>";
-		htmlContentTitle += "</div>";
-		htmlContentTitle += "<div class='created_date'>";
-		htmlContentTitle += lblCreatedDate.getText();
-		htmlContentTitle += "</div>";
-		htmlContentTitle += "</div>";
-			
 		HTMLPanel contentTitle = new HTMLPanel(htmlContentTitle);
-		HTMLPanel contentSubTitle = new HTMLPanel("<div class='repNavigate'>navigate / navigate / etc..</div>");
-		
-		String htmlRepGrid = "";
-		htmlRepGrid =  "<div id='repositoryGrid' class='repGridWrapper'>";
-		htmlRepGrid += "<table>";
-		htmlRepGrid += printFolders(repository.getRepositoryID(), 0).getHTML();
-		htmlRepGrid += printFiles(repository.getRepositoryID(), 0).getHTML();
-		htmlRepGrid += "</table>";
-		htmlRepGrid += "</div>";
-
-		HTMLPanel contentRepository = new HTMLPanel(htmlRepGrid);
-		
+		contentTitle.add(lnkRepository, "lnkRepository");
 		RootPanel.get("contentHeadWrapper").add(contentTitle);
-		RootPanel.get("mainContent").add(contentSubTitle);
-		RootPanel.get("mainContent").add(contentRepository);
+		
+		printRepository(repository.getRepositoryID(), 0, strNav);
 	}
 	
-	public HTML printFolders(int repositoryID, int parentFolderID) {
+	public void printRepository(final int repositoryID, final int parentFolderID, final String Navigation) {
 		
-		if(RootPanel.get("repositoryGrid table") != null)
-			RootPanel.get("repositoryGrid table").clear();
-		
-	    final HTML hPanel = new HTML();
+		hpCenterLayout = new HorizontalPanel();
 		
 		objFoldService.getFolders(repositoryID, parentFolderID, new AsyncCallback<List<FolderInfo>>() {
 			
+			String htmlRepository = "<div id='repositoryGrid' class='repGridWrapper'>";
+			String NavigateText = Navigation;
+		
+			Anchor lnkPrevious;
+			List<Anchor> lstFolderAnchors = new ArrayList<Anchor>();
+			List<Anchor> lstFileAnchors = new ArrayList<Anchor>();
+			HTMLPanel contentRepository;
+		
 			@Override
 			public void onSuccess(List<FolderInfo> result) {
-				// TODO Auto-generated method stub
-				String structure = "";
-				
-				for(int i =0; i < result.size(); i++) {
-					final FolderInfo objFoldInfo = result.get(i);
-					
-					structure += "<tr>";
-					
-					Anchor lnkName = new Anchor();
-					lnkName.setText(objFoldInfo.getName());
-					lnkName.setStyleName("lnkItemTitle");
-
-					lnkName.addClickHandler(new ClickHandler() {
-
-						@Override
-						public void onClick(ClickEvent event) {
-							// TODO Auto-generated method stub
-							printFolders(objFoldInfo.getRepository().getRepositoryID(), objFoldInfo.getFolderID());
-							printFiles(objFoldInfo.getRepository().getRepositoryID(), objFoldInfo.getFolderID());
-						}
-						
-					});
-					
-					structure += "<td>" + lnkName + "</td>";
-					structure += "<td>" + objDateFormat.format(objFoldInfo.getDatecreated()) + "</td>";
-					structure += "</tr>";
-						
-				}
-				
-				hPanel.setHTML(structure);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		
-		return hPanel;
-	}
 	
-	public HTML printFiles(int repositoryID, int parentFolderID) {
-		
-	    final HTML hPanel = new HTML();
-		
-		objFileService.getFiles(repositoryID, parentFolderID, new AsyncCallback<List<FileInfo>>() {
-			
-			@Override
-			public void onSuccess(List<FileInfo> result) {
 				// TODO Auto-generated method stub
-				String structure = "";
+				htmlRepository += "<table>";
 				
-				for(int i =0; i < result.size(); i++) {
-					final FileInfo objFileInfo = result.get(i);
-					
-					structure += "<tr>";
-					
-					Anchor lnkName = new Anchor();
-					lnkName.setText(objFileInfo.getName() + objFileInfo.getExtension());
-					lnkName.setStyleName("lnkItemTitle");
-
-					lnkName.addClickHandler(new ClickHandler() {
-
+				if(parentFolderID != 0) {		
+					lnkPrevious = new Anchor();
+					lnkPrevious.setText("...");
+					lnkPrevious.setStyleName("lnkItemTitle");
+					lnkPrevious.addClickHandler(new ClickHandler() {
+						
 						@Override
 						public void onClick(ClickEvent event) {
 							// TODO Auto-generated method stub
+							RootPanel.get("mainContent").remove(1);
 							
+							objFoldService.getFolder(parentFolderID, new AsyncCallback<FolderInfo>() {
+								
+								@Override
+								public void onSuccess(FolderInfo result) {
+									// TODO Auto-generated method stub
+									
+									NavigateText = NavigateText.substring(0, NavigateText.lastIndexOf('/'));
+									
+									if(!NavigateText.contains("/")) {
+										NavigateText = NavigateText.replaceAll("rgb\\(153\\,201\\,198\\)", "black");
+									} else {
+										String start = NavigateText.substring(0, NavigateText.lastIndexOf('/'));		
+										String end = NavigateText.substring(NavigateText.lastIndexOf('/'), NavigateText.length());
+										
+										end = end.replaceAll("rgb\\(153\\,201\\,198\\)", "black");
+										NavigateText = start + end;
+									}
+							
+									RootPanel.get("mainContent").getWidget(0).getElement().setInnerHTML(NavigateText);
+									
+									printRepository(repositoryID, result.getParentFolderID(), NavigateText);
+								}
+								
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+									
+								}
+							});	
 						}
 						
 					});
 					
-					structure += "<td>" + lnkName + "</td>";
-					structure += "<td>" + objDateFormat.format(objFileInfo.getDatecreated()) + "</td>";
-					structure += "</tr>";
-						
+					htmlRepository += "<tr>";
+					htmlRepository += "<td><div id='repRoot'></div></td>";
+					htmlRepository += "</tr>";
 				}
 				
-				hPanel.setHTML(structure);
+				if(result.size() > 0) {			
+					for(int i =0; i < result.size(); i++) {
+						
+						final FolderInfo objFoldInfo = result.get(i);	
+						htmlRepository += "<tr>";
+						
+						Anchor lnkName = new Anchor();
+						lnkName.setText(objFoldInfo.getName());
+						lnkName.setStyleName("lnkItemTitle");
+	
+						lnkName.addClickHandler(new ClickHandler() {
+	
+							@Override
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								
+								RootPanel.get("mainContent").remove(1);
+								
+								NavigateText = NavigateText.replaceAll("black", "rgb(153,201,198)");
+								NavigateText += " / " + "<b style='color:black'>" + objFoldInfo.getName() + "<b>";
+								RootPanel.get("mainContent").getWidget(0).getElement().setInnerHTML(NavigateText);
+								
+								printRepository(objFoldInfo.getRepository().getRepositoryID(), objFoldInfo.getFolderID(), NavigateText);
+							}
+							
+						});
+						
+						htmlRepository += "<td><div id='lnkFolder" + i + "'></div></td>";
+						htmlRepository += "<td style='text-align:right'>" + objDateFormat.format(objFoldInfo.getDatecreated()) + "</td>";
+						htmlRepository += "</tr>";
+						
+						lstFolderAnchors.add(lnkName);
+					}
+				}
+				
+				objFileService.getFiles(repositoryID, parentFolderID, new AsyncCallback<List<FileInfo>>() {
+					
+					@Override
+					public void onSuccess(List<FileInfo> result) {
+						// TODO Auto-generated method stub
+						
+						if(result.size() > 0) {
+							for(int i =0; i < result.size(); i++) {
+								final FileInfo objFileInfo = result.get(i);
+								
+								htmlRepository += "<tr>";
+								
+								Anchor lnkName = new Anchor();
+								lnkName.setText(objFileInfo.getName() + objFileInfo.getExtension());
+								lnkName.setStyleName("lnkItemTitle");
+			
+								lnkName.addClickHandler(new ClickHandler() {
+			
+									@Override
+									public void onClick(ClickEvent event) {
+										// TODO Auto-generated method stub
+										
+									}
+									
+								});
+								
+								htmlRepository += "<td><div id='lnkFile" + i + "'></div></td>";
+								htmlRepository += "<td style='text-align:right'>" + objDateFormat.format(objFileInfo.getDatecreated()) + "</td>";
+								htmlRepository += "</tr>";		
+								
+								lstFileAnchors.add(lnkName);
+							}
+						}
+						
+						htmlRepository += "</table>";
+						
+						contentRepository = new HTMLPanel(htmlRepository);
+						
+						if(lstFolderAnchors.size() > 0) {
+							for(int i=0; i < lstFolderAnchors.size(); i++) {
+								contentRepository.add(lstFolderAnchors.get(i), "lnkFolder" + i);
+							}
+						}
+						if(lstFileAnchors.size() > 0) {
+							for(int i=0; i < lstFileAnchors.size(); i++) {
+								contentRepository.add(lstFileAnchors.get(i), "lnkFile" + i);
+							}
+						}
+						if(parentFolderID != 0) {
+							contentRepository.add(lnkPrevious, "repRoot");
+						}
+						
+						//Add Repository Grid to Horizontal Panel
+						hpCenterLayout.add(contentRepository);
+
+						Anchor createFolder = new Anchor();
+						createFolder.setText("Create Folder");
+						createFolder.setStyleName("lnkItemTitle");
+						
+						createFolder.addClickHandler(new ClickHandler() {
+
+							@Override
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								
+							}
+
+						});
+						
+						//Add Create File link to Horizontal Panel
+						Anchor createFile = new Anchor();
+						createFile.setText("Create File");
+						createFile.setStyleName("lnkItemTitle");
+						
+						createFile.addClickHandler(new ClickHandler() {
+
+							@Override
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								
+							}
+
+						});
+						
+						vpCenterLayout = new VerticalPanel();
+						vpCenterLayout.setStyleName("sideLinkWrapper");
+						vpCenterLayout.add(createFolder);
+						vpCenterLayout.add(createFile);
+						
+						hpCenterLayout.add(vpCenterLayout);
+					
+						RootPanel.get("mainContent").add(hpCenterLayout);
+						
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						Window.alert(caught.getMessage());
+					}
+				});
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
-		return hPanel;
 	}
-	
 	
 	
 	public void loadTrendingRepositoryPanel() {

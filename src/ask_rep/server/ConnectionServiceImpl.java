@@ -5,10 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class ConnectionServiceImpl {
 	
-	public static Connection getConnection() {
+	public Connection getConnection() {
 	
 		Connection conn = null;
 		

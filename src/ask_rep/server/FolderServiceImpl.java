@@ -17,16 +17,15 @@ import ask_rep.client.RepositoryInfo;
 public class FolderServiceImpl extends RemoteServiceServlet implements FolderService {
 	
 	RepositoryServiceImpl repService = new RepositoryServiceImpl();
-
+	ConnectionServiceImpl connService = new ConnectionServiceImpl();
+	Connection myConnection = connService.getConnection();
+	
 	@Override
 	public List<FolderInfo> getFolders(int RepositoryID, int ParentFolderID) {
-		
+
 		List<FolderInfo> lstFolders = new ArrayList<FolderInfo>();
 
 		try {
-			
-			Connection myConnection = ConnectionServiceImpl.getConnection();
-
 			String objStatement = "";
 			
 			if(ParentFolderID > 0) {
@@ -51,11 +50,11 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 				objFolderInfo.setParentFolderID(rs.getInt(2));
 				objFolderInfo.setName(rs.getString(3));
 				
-				//RepositoryInfo objRepInfo = repService.getRepository(rs.getInt(4));
+				RepositoryInfo objRepInfo = repService.getRepository(rs.getInt(4));
 
 				objFolderInfo.setDatecreated(rs.getDate(5));
 				objFolderInfo.setDateupdated(rs.getDate(6));
-				//objFolderInfo.setRepository(objRepInfo);
+				objFolderInfo.setRepository(objRepInfo);
 				
 				lstFolders.add(objFolderInfo);
 				
@@ -74,8 +73,6 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 		FolderInfo objFolderInfo = new FolderInfo();
 		try {
 			
-			Connection myConnection = ConnectionServiceImpl.getConnection();
-
 			String objStatement = "SELECT * FROM folders where folderID = ?";
 			
 			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement);

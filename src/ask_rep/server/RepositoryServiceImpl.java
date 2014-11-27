@@ -14,15 +14,15 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class RepositoryServiceImpl extends RemoteServiceServlet implements RepositoryService {
-
+	ConnectionServiceImpl connService = new ConnectionServiceImpl();
+	Connection myConnection = connService.getConnection();
+	
 	@Override
 	public int insertRepository(String Name, int UserID) {
 		
 		int repositoryID = 0;
 		
 		try {
-			
-			Connection myConnection = ConnectionServiceImpl.getConnection();
 			
 			String objStatement = "INSERT INTO repositories (name, userID, datecreated, dateupdated) VALUES(?, ?, NOW(), NOW())";
 	        PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
@@ -51,8 +51,6 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 		
 		RepositoryInfo objRepInfo = new RepositoryInfo();
 		try {
-			
-			Connection myConnection = ConnectionServiceImpl.getConnection();
 
 			String objStatement = "SELECT repositories.repositoryID, repositories.name, repositories.datecreated, repositories.dateupdated, " + 
 								  "repositories.userID, users.name, users.email " + 
