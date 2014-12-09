@@ -9,4 +9,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface FolderService extends RemoteService {
 	public List<FolderInfo> getFolders(int repositoryID, int parentFolderID);
 	public FolderInfo getFolder(int FolderID);
+	public int insertFolder(String Name, int ParentFolderID, int repositoryID);
 }

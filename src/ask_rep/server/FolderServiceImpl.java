@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,48 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 	RepositoryServiceImpl repService = new RepositoryServiceImpl();
 	ConnectionServiceImpl connService = new ConnectionServiceImpl();
 	Connection myConnection = connService.getConnection();
+	
+	@Override
+	public int insertFolder(String Name, int ParentFolderID, int repositoryID) {
+
+		int folderID = 0;
+
+		try {
+
+			String objStatement;
+			
+			if(ParentFolderID == 0) {
+				objStatement = "INSERT INTO folders (name, repositoryID, datecreated, dateupdated) VALUES(?, ?, NOW(), NOW())";
+			} else {
+				objStatement = "INSERT INTO folders (parentFolderID, name, repositoryID, datecreated, dateupdated) VALUES(?, ?, ?, NOW(), NOW())";
+			}
+			
+			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
+			
+			if(ParentFolderID == 0) {
+				objPrepStatement.setString(1, Name);
+				objPrepStatement.setInt(2, repositoryID);
+			} else {
+				objPrepStatement.setInt(1, ParentFolderID);
+				objPrepStatement.setString(2,  Name);
+				objPrepStatement.setInt(3, repositoryID);
+			}
+
+			objPrepStatement.executeUpdate();
+
+			ResultSet rs = objPrepStatement.getGeneratedKeys();
+
+			if (rs.next()) {
+				folderID = rs.getInt(1);
+			}
+
+		} catch (SQLException e) {
+
+		}
+
+		return folderID;
+
+	}
 	
 	@Override
 	public List<FolderInfo> getFolders(int RepositoryID, int ParentFolderID) {

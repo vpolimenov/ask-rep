@@ -199,6 +199,16 @@ h1
 	border:dotted 2px rgb(153, 201, 198);
 }
 
+.dialog-textbox {
+	background:rgb(245, 245, 245);
+	padding:8px;
+	width:120px;
+	margin-bottom:20px;
+	font-size:16px;
+	font-style:italic;
+	border:dotted 2px rgb(153, 201, 198);
+}
+
 .hrStyle {
     padding: 0;
     border: none;
@@ -217,6 +227,40 @@ h1
     padding: 0 0.25em;
     background: white;
 }
+
+.dialog {
+	background:rgb(245, 245, 245);
+	padding:20px;
+	border:dotted 2px rgb(153, 201, 198);
+}
+
+.dialog-button {
+	border:none !important;
+	background-color:rgb(153, 201, 198) !important;
+	color:white !important;
+	width:60px !important;
+	cursor:pointer !important;
+	background-repeat:none !important;
+	background-size:none !important; 
+	background-image:none !important;
+	font-size:16px !important;
+	font-family: 'PT Sans', sans-serif !important;
+	margin-left: 45px;
+	margin-top: 20px;
+	padding: 5px;	
+}
+
+.overlay {
+	
+	background-color: #000;
+	opacity: 0.70;
+	-moz-opacity: 0.70;
+	filter: alpha(opacity=70);
+	width: 100%;
+	height: 100%;	
+	
+}
+
 
 .button {
 	border:none !important;
@@ -334,6 +378,38 @@ h1
 	margin-top:2px;
 }
 
+#existRepositoryWrapper {
+	
+}
+
+#existRepositoryWrapper table {
+	border-collapse: collapse;
+}
+
+.repositoryitem {
+  background:rgb(153, 201, 198);
+  padding:50px;
+  width:149px;
+  height:40px;
+  margin-left:10px;
+  margin-top:20px;
+  text-align:center;
+  -webkit-transition: all 0.5s ease;
+     -moz-transition: all 0.5s ease;
+       -o-transition: all 0.5s ease;
+      -ms-transition: all 0.5s ease;
+          transition: all 0.5s ease;
+}
+ 
+.repositoryitem:hover {
+  border-radius: 50%;
+  cursor:pointer;
+  -webkit-transform: rotate(-0deg);
+     -moz-transform: rotate(-0deg);
+       -o-transform: rotate(-0deg);
+      -ms-transform: rotate(-0deg);
+          transform: rotate(-0deg);
+}
 .contentTitle
 {
 	width:100%;
