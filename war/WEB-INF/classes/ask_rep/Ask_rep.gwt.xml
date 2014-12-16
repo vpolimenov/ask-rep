@@ -17,7 +17,9 @@
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
-  <!-- Other module inherits                                      -->
+  <!-- Other module inherits <inherits name='edu.ycp.cs.dh.acegwt.AceGWT'/>  -->
+  
+    
 
  <inherits name="com.smartgwt.SmartGwt"/>
  <inherits name="com.smartclient.theme.enterpriseblue.EnterpriseBlue"/>

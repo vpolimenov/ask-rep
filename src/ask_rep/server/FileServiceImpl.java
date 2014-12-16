@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,35 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 	FolderServiceImpl foldService = new FolderServiceImpl();
 	ConnectionServiceImpl connService = new ConnectionServiceImpl();
 	Connection myConnection = connService.getConnection();
+	
+	
+	@Override
+	public int insertFile(String Name, int UserID) {
+		int fileID = 0;
+
+		try {
+
+			String objStatement = "INSERT INTO files (name, userID, datecreated, dateupdated) VALUES(?, ?, NOW(), NOW())";
+			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
+			objPrepStatement.setString(1, Name);
+			objPrepStatement.setInt(2, UserID);
+
+			objPrepStatement.executeUpdate();
+
+			ResultSet rs = objPrepStatement.getGeneratedKeys();
+
+			if (rs.next()) {
+				fileID = rs.getInt(1);
+			}
+
+		} catch (SQLException e) {
+
+		}
+
+		return fileID;
+	}
+	
+	
 	
 	@Override
 	public List<FileInfo> getFiles(int RepositoryID, int FolderID) {
@@ -74,6 +104,6 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 		}
 		
 		return lstFiles;
-	}
+	}	
 	
 }
