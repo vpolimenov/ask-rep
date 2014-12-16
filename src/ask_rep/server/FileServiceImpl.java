@@ -28,13 +28,15 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 	@Override
 	public int insertFile(String Name, int UserID) {
 		int fileID = 0;
+		
+		//here do the blob iteration
 
 		try {
 
-			String objStatement = "INSERT INTO files (name, userID, datecreated, dateupdated) VALUES(?, ?, NOW(), NOW())";
+			String objStatement = "INSERT INTO files (name, extension, datecreated) VALUES(?, ?, NOW())";
 			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
 			objPrepStatement.setString(1, Name);
-			objPrepStatement.setInt(2, UserID);
+			objPrepStatement.setString(2, ".hmm");
 
 			objPrepStatement.executeUpdate();
 

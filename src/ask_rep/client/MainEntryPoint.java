@@ -1117,33 +1117,49 @@ public class MainEntryPoint implements EntryPoint {
 					System.out.println("User: '" + logInfo.getNickname()
 							+ "' created file: '" + fileToDatabase + "'");
 					
-					objFileService.insertFile(fileToDatabase, UserID,
-							  new AsyncCallback<Integer>() {
-							  
-							  @Override public void onFailure(Throwable caught) {
-							  // TODO Auto-generated method stub
-							  Window.alert(caught.getMessage()); }
-							  
-							  @Override public void onSuccess(Integer fileID)
-							  { // TODO Auto-generated method stub
-							  
-							  objFileService.getFiles(fileID, UserID, new
-							  AsyncCallback<List<FileInfo>>() {
-							  
-							  @Override public void onFailure(Throwable caught) {
-							  // TODO Auto-generated method stub
-							  
-							  }
-							  
-							  @Override public void onSuccess(List<FileInfo>
-							  result) { // TODO Auto-generated method stub
-//							  loadCreateRepPanel(result, 1); 
-								  System.out.println(result);
-								  }
-							  
-							  });
-							  
-							  } });
+					
+					objFileService.insertFile(fileToDatabase, UserID, new AsyncCallback<Integer>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(Integer result) {
+							// TODO Auto-generated method stub
+							System.out.println("shistani li");
+						}
+					});
+					
+//					objFileService.insertFile(fileToDatabase, UserID,
+//							  new AsyncCallback<Integer>() {
+//							  
+//							  @Override public void onFailure(Throwable caught) {
+//							  // TODO Auto-generated method stub
+//							  Window.alert(caught.getMessage()); }
+//							  
+//							  @Override public void onSuccess(Integer fileID)
+//							  { // TODO Auto-generated method stub
+//							  
+//							  objFileService.getFiles(fileID, UserID, new
+//							  AsyncCallback<List<FileInfo>>() {
+//							  
+//							  @Override public void onFailure(Throwable caught) {
+//							  // TODO Auto-generated method stub
+//							  
+//							  }
+//							  
+//							  @Override public void onSuccess(List<FileInfo>
+//							  result) { // TODO Auto-generated method stub
+////							  loadCreateRepPanel(result, 1); 
+//								  System.out.println(result);
+//								  }
+//							  
+//							  });
+//							  
+//							  } });
 
 					dialogbox.hide();
 				}
