@@ -1452,7 +1452,10 @@ public class MainEntryPoint implements EntryPoint {
 		objSectionStack.setWidth("550px");
 		objSectionStack.setStyleName("snippetContainer");
 
-		if (!snippets.isEmpty()) {
+		if (!snippets.isEmpty()) {			
+			// throws the exception here
+			// i think it shouldn't be forced to be 20
+			// however you need to force the stack section to be at least 20
 			for (int i = 1; i <= 20; i++) {
 				Snippet snippet = snippets.get(i);
 
