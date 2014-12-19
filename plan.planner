@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<project name="" company="" manager="" phase="" project-start="20141013T000000Z" mrproject-version="2" calendar="1">
+  <properties/>
+  <phases/>
+  <calendars>
+    <day-types>
+      <day-type id="0" name="Working" description="A default working day"/>
+      <day-type id="1" name="Nonworking" description="A default non working day"/>
+      <day-type id="2" name="Use base" description="Use day from base calendar"/>
+    </day-types>
+    <calendar id="1" name="Default">
+      <default-week mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" sun="1"/>
+      <overridden-day-types>
+        <overridden-day-type id="0">
+          <interval start="0800" end="1200"/>
+          <interval start="1300" end="1700"/>
+        </overridden-day-type>
+      </overridden-day-types>
+      <days/>
+    </calendar>
+  </calendars>
+  <tasks>
+    <task id="1" name="Planning and Brainstorming" note="" work="201600" start="20141013T000000Z" end="20141021T170000Z" work-start="20141013T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="2" name="Implementation" note="" work="1008000" start="20141021T170000Z" end="20141114T170000Z" work-start="20141022T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="3" name="Set up" note="" work="201600" start="20141021T170000Z" end="20141028T170000Z" work-start="20141022T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="1" type="FS"/>
+        </predecessors>
+        <task id="4" name="GWT" note="" work="115200" start="20141021T170000Z" end="20141027T170000Z" work-start="20141022T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <task id="5" name="Eclipse Luna" note="" work="28800" start="20141021T170000Z" end="20141022T170000Z" work-start="20141022T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+          <task id="6" name="GWT SDK" note="" work="28800" start="20141022T170000Z" end="20141023T170000Z" work-start="20141023T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+            <predecessors>
+              <predecessor id="1" predecessor-id="5" type="FS"/>
+            </predecessors>
+          </task>
+          <task id="7" name="Mozila Firefox 25.0" note="" work="28800" start="20141023T170000Z" end="20141024T170000Z" work-start="20141024T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+            <predecessors>
+              <predecessor id="1" predecessor-id="6" type="FS"/>
+            </predecessors>
+          </task>
+          <task id="8" name="Google Chrome" note="" work="28800" start="20141024T170000Z" end="20141027T170000Z" work-start="20141027T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+            <predecessors>
+              <predecessor id="1" predecessor-id="7" type="FS"/>
+            </predecessors>
+          </task>
+        </task>
+        <task id="9" name="Git repository" note="" work="86400" start="20141027T170000Z" end="20141028T170000Z" work-start="20141028T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="8" type="FS"/>
+          </predecessors>
+          <task id="10" name="Create Repository" note="" work="28800" start="20141027T170000Z" end="20141028T170000Z" work-start="20141028T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+          <task id="11" name="Add participants" note="" work="28800" start="20141027T170000Z" end="20141028T170000Z" work-start="20141028T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+          <task id="12" name="Clone project" note="" work="28800" start="20141027T170000Z" end="20141028T170000Z" work-start="20141028T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        </task>
+      </task>
+      <task id="13" name="Search functionality" note="" work="144000" start="20141028T170000Z" end="20141103T170000Z" work-start="20141029T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="12" type="FS"/>
+        </predecessors>
+        <task id="14" name="Hot-button" note="" work="28800" start="20141028T170000Z" end="20141029T170000Z" work-start="20141029T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="9" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="15" name="Custom Search Engine" note="" work="28800" start="20141028T170000Z" end="20141029T170000Z" work-start="20141029T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="16" name="Jsoup extraction" note="" work="28800" start="20141029T170000Z" end="20141030T170000Z" work-start="20141030T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="15" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="17" name="Snippet Rating" note="" work="28800" start="20141030T170000Z" end="20141031T170000Z" work-start="20141031T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="16" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="18" name="Display Snippets" note="" work="28800" start="20141031T170000Z" end="20141103T170000Z" work-start="20141103T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="17" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+      <task id="19" name="Log-In" note="" work="28800" start="20141028T170000Z" end="20141029T170000Z" work-start="20141029T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="9" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="20" name="Database" note="" work="86400" start="20141103T170000Z" end="20141105T170000Z" work-start="20141104T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="18" type="FS"/>
+          <predecessor id="1" predecessor-id="19" type="FS"/>
+        </predecessors>
+        <task id="21" name="SQL database" note="" work="28800" start="20141103T170000Z" end="20141104T170000Z" work-start="20141104T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="22" name="Workbench" note="" work="28800" start="20141103T170000Z" end="20141104T170000Z" work-start="20141104T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="23" name="Create database with tables" note="" work="28800" start="20141104T170000Z" end="20141105T170000Z" work-start="20141105T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="21" type="FS"/>
+            <predecessor id="1" predecessor-id="22" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+      <task id="24" name="Repository structure" note="" work="28800" start="20141105T170000Z" end="20141106T170000Z" work-start="20141106T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="25" name="Iterative view" note="" work="28800" start="20141105T170000Z" end="20141106T170000Z" work-start="20141106T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="23" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+      <task id="26" name="Files" note="" work="144000" start="20141106T170000Z" end="20141113T170000Z" work-start="20141107T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="25" type="FS"/>
+        </predecessors>
+        <task id="27" name="Create BLOB structure" note="" work="86400" start="20141106T170000Z" end="20141111T170000Z" work-start="20141107T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="28" name="Save files into SQL" note="" work="28800" start="20141111T170000Z" end="20141112T170000Z" work-start="20141112T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="27" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="29" name="Upload files into SQL" note="" work="28800" start="20141112T170000Z" end="20141113T170000Z" work-start="20141113T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="28" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+      <task id="30" name="Design" note="" work="374400" start="20141028T170000Z" end="20141114T170000Z" work-start="20141029T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="3" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="31" name="Report" note="" work="316800" start="20141114T170000Z" end="20141201T170000Z" work-start="20141117T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="30" type="FS"/>
+      </predecessors>
+      <task id="32" name="Introduction" note="" work="28800" start="20141114T170000Z" end="20141117T170000Z" work-start="20141117T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="33" name="Cloud Computing" note="" work="28800" start="20141117T170000Z" end="20141118T170000Z" work-start="20141118T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="32" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="34" name="Planning" note="" work="28800" start="20141118T170000Z" end="20141119T170000Z" work-start="20141119T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="33" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="35" name="Implementation" note="" work="144000" start="20141119T170000Z" end="20141126T170000Z" work-start="20141120T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="34" type="FS"/>
+        </predecessors>
+        <task id="36" name="Log-In" note="" work="28800" start="20141119T170000Z" end="20141120T170000Z" work-start="20141120T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="37" name="Database functionality" note="" work="28800" start="20141120T170000Z" end="20141121T170000Z" work-start="20141121T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="36" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="38" name="Repositories" note="" work="28800" start="20141121T170000Z" end="20141124T170000Z" work-start="20141124T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="37" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="39" name="Create/Upload files" note="" work="28800" start="20141124T170000Z" end="20141125T170000Z" work-start="20141125T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="38" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="40" name="Search functionality" note="" work="28800" start="20141125T170000Z" end="20141126T170000Z" work-start="20141126T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="39" type="FS"/>
+          </predecessors>
+        </task>
+      </task>
+      <task id="41" name="Results" note="" work="28800" start="20141126T170000Z" end="20141127T170000Z" work-start="20141127T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="35" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="42" name="Future works" note="" work="28800" start="20141127T170000Z" end="20141128T170000Z" work-start="20141128T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="41" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="43" name="Summary" note="" work="28800" start="20141128T170000Z" end="20141201T170000Z" work-start="20141201T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="42" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="44" name="Submission" note="" work="115200" start="20141201T170000Z" end="20141205T170000Z" work-start="20141202T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="43" type="FS"/>
+      </predecessors>
+      <task id="45" name="Testing" note="" work="86400" start="20141201T170000Z" end="20141204T170000Z" work-start="20141202T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="46" name="Proof read" note="" work="28800" start="20141204T170000Z" end="20141205T170000Z" work-start="20141205T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="45" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+  </tasks>
+  <resource-groups/>
+  <resources/>
+  <allocations/>
+</project>
