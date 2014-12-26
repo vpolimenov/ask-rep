@@ -1275,18 +1275,21 @@ public class MainEntryPoint implements EntryPoint {
 
 		final Label lblInstructions = new Label();
 		lblInstructions.setStyleName("instructions");
-		lblInstructions.setText("Press CTRL to search for code snippets ...");
+		lblInstructions.setText("Press SHIFT to search for code snippets ...");
 		hpCenterLayout.add(lblInstructions);
 
+		
 		codePanel.addKeyDownHandler(new KeyDownHandler() {
 
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 
-				if (event.getNativeKeyCode() == KeyCodes.KEY_CTRL
+				if (event.getNativeKeyCode() == KeyCodes.KEY_SHIFT
 						&& codePanel.getSelectedText() != null
 						&& codePanel.getSelectionLength() > 3) {
 
+					event.preventDefault();
+					
 					if (hpCenterLayout.getWidget(1) != null) {
 
 						hpCenterLayout.remove(1);
