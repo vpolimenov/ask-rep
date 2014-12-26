@@ -8,4 +8,5 @@ public interface RepositoryServiceAsync {
   public void insertRepository(String Name, int UserID, AsyncCallback<Integer> asyncCallback);
   public void getRepository(int RepositoryID, AsyncCallback<RepositoryInfo> asyncCallback);
   public void getRepositoryByUserID(int UserID, AsyncCallback<List<RepositoryInfo>> asyncCallback);
+  public void getLatestRepositories(int UserID, AsyncCallback<List<RepositoryInfo>> asyncCallback);
 } 

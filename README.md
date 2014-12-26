@@ -1,4 +1,4 @@
 ask-rep
 =======
 
-The main objective for this project is to create an on-line repository where users will be able to create, upload and share their files amongst other users. Users will be able to create public repositories in order to upload or create new files and store them in folders/sub-folders. The main reason for creating custom files is to allow the user to write pieces of code and if needs be whilst typing the application will recommend on-line code snippets to him/her. This will permit the user to search for code through the application instead of typing their query in Google. Furthermore, these files will be saved on the cloud and placed in new or existing repositories according to the users’ preference. The repositories will be available to the public and the files can be viewed straight from the browser. 
+On-line repository with additional features.

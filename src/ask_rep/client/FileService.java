@@ -8,6 +8,5 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 @RemoteServiceRelativePath("file")
 public interface FileService extends RemoteService {
-	public int insertFile(String Name, int UserID);
 	public List<FileInfo> getFiles(int repositoryID, int folderID);
 }

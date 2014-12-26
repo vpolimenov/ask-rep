@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +27,12 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 
 		try {
 
-			String objStatement = "INSERT INTO repositories (name, userID, datecreated, dateupdated) VALUES(?, ?, NOW(), NOW())";
+			String objStatement = "INSERT INTO repositories (name, userID, datecreated, dateupdated) VALUES(?, ?, ?, ?)";
 			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
 			objPrepStatement.setString(1, Name);
 			objPrepStatement.setInt(2, UserID);
+			objPrepStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+			objPrepStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
 
 			objPrepStatement.executeUpdate();
 
@@ -69,8 +72,8 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 			if (rs.next()) {
 				objRepInfo.setRepositoryID(rs.getInt(1));
 				objRepInfo.setName(rs.getString(2));
-				objRepInfo.setCreatedDate(rs.getDate(3));
-				objRepInfo.setUpdatedDate(rs.getDate(4));
+				objRepInfo.setCreatedDate(rs.getTimestamp(3));
+				objRepInfo.setUpdatedDate(rs.getTimestamp(4));
 
 				UserInfo objUserInfo = new UserInfo();
 
@@ -113,8 +116,68 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 				
 				objRepInfo.setRepositoryID(rs.getInt(1));
 				objRepInfo.setName(rs.getString(2));
-				objRepInfo.setCreatedDate(rs.getDate(3));
-				objRepInfo.setUpdatedDate(rs.getDate(4));
+				objRepInfo.setCreatedDate(rs.getTimestamp(3));
+				objRepInfo.setUpdatedDate(rs.getTimestamp(4));
+
+				UserInfo objUserInfo = new UserInfo();
+
+				objUserInfo.setUserID(rs.getInt(5));
+				objUserInfo.setName(rs.getString(6));
+				objUserInfo.setEmail(rs.getString(7));
+
+				objRepInfo.setUser(objUserInfo);
+				
+				lstRepositories.add(objRepInfo);
+			}
+
+		} catch (SQLException e) {
+
+		}
+
+		return lstRepositories;
+	}
+	
+	@Override
+	public List<RepositoryInfo> getLatestRepositories(int UserID) {
+		// TODO Auto-generated method stub
+
+		List<RepositoryInfo> lstRepositories = new ArrayList<RepositoryInfo>();
+		
+		try {
+
+			String objStatement = "";
+			
+			if(UserID > 0) {
+				objStatement = "SELECT repositories.repositoryID, repositories.name, repositories.datecreated, repositories.dateupdated, "
+						+ "repositories.userID, users.name, users.email "
+						+ "FROM repositories "
+						+ "INNER JOIN users ON repositories.userID = users.userID "
+						+ "WHERE repositories.userID != ? "
+						+ "ORDER BY repositories.dateupdated DESC";
+			} else {
+				objStatement = "SELECT repositories.repositoryID, repositories.name, repositories.datecreated, repositories.dateupdated, "
+						+ "repositories.userID, users.name, users.email "
+						+ "FROM repositories "
+						+ "INNER JOIN users ON repositories.userID = users.userID "
+						+ "ORDER BY repositories.dateupdated DESC";
+			}
+
+			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement);
+
+			if(UserID > 0) {
+				objPrepStatement.setInt(1, UserID);
+			}
+			
+			ResultSet rs = objPrepStatement.executeQuery();
+
+			while (rs.next()) {
+				
+				RepositoryInfo objRepInfo = new RepositoryInfo();
+				
+				objRepInfo.setRepositoryID(rs.getInt(1));
+				objRepInfo.setName(rs.getString(2));
+				objRepInfo.setCreatedDate(rs.getTimestamp(3));
+				objRepInfo.setUpdatedDate(rs.getTimestamp(4));
 
 				UserInfo objUserInfo = new UserInfo();
 

@@ -1,7 +1,7 @@
 package ask_rep.client;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 @SuppressWarnings("serial")
 public class FileInfo implements Serializable {
@@ -12,7 +12,7 @@ public class FileInfo implements Serializable {
 	private byte[] fileContent;
 	private FolderInfo folder;
 	private RepositoryInfo repository;
-	private Date datecreated;
+	private Timestamp datecreated;
 	
 	public int getFileID() {
 		return fileID;
@@ -50,10 +50,10 @@ public class FileInfo implements Serializable {
 	public void setRepository(RepositoryInfo repository) {
 		this.repository = repository;
 	}
-	public Date getDatecreated() {
+	public Timestamp getDatecreated() {
 		return datecreated;
 	}
-	public void setDatecreated(Date datecreated) {
-		this.datecreated = datecreated;
+	public void setDatecreated(Timestamp timestamp) {
+		this.datecreated = timestamp;
 	}
 }

@@ -31,14 +31,14 @@ CREATE TABLE `files` (
   `fileContent` blob,
   `folderID` int(11) DEFAULT NULL,
   `repositoryID` int(11) NOT NULL,
-  `datecreated` datetime NOT NULL,
+  `datecreated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`fileID`),
   UNIQUE KEY `fileID_UNIQUE` (`fileID`),
   KEY `fk_files_folders_idx` (`folderID`),
   KEY `fk_files_repositories_idx` (`repositoryID`),
   CONSTRAINT `fk_files_folders` FOREIGN KEY (`folderID`) REFERENCES `folders` (`folderID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_files_repositories` FOREIGN KEY (`repositoryID`) REFERENCES `repositories` (`repositoryID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,6 @@ CREATE TABLE `files` (
 
 LOCK TABLES `files` WRITE;
 /*!40000 ALTER TABLE `files` DISABLE KEYS */;
-INSERT INTO `files` VALUES (3,'file1','.java',NULL,6,1,'0000-00-00 00:00:00'),(4,'file2','.c',NULL,NULL,1,'2014-04-12 00:00:00');
 /*!40000 ALTER TABLE `files` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,15 +62,15 @@ CREATE TABLE `folders` (
   `parentFolderID` int(11) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `repositoryID` int(11) NOT NULL,
-  `datecreated` datetime NOT NULL,
-  `dateupdated` datetime NOT NULL,
+  `datecreated` timestamp NULL DEFAULT NULL,
+  `dateupdated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`folderID`),
   UNIQUE KEY `folderID_UNIQUE` (`folderID`),
   KEY `fk_folders_repositories_idx` (`repositoryID`),
   KEY `fk_folders_folders_idx` (`parentFolderID`),
   CONSTRAINT `fk_folders_folders` FOREIGN KEY (`parentFolderID`) REFERENCES `folders` (`folderID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_folders_repositories` FOREIGN KEY (`repositoryID`) REFERENCES `repositories` (`repositoryID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +79,7 @@ CREATE TABLE `folders` (
 
 LOCK TABLES `folders` WRITE;
 /*!40000 ALTER TABLE `folders` DISABLE KEYS */;
-INSERT INTO `folders` VALUES (6,NULL,'Folder 1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(7,NULL,'Folder 2',1,'0000-00-00 00:00:00','0000-00-00 00:00:00'),(8,6,'Folder 3',1,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO `folders` VALUES (1,NULL,'folder 1',3,'2014-12-26 08:56:01','2014-12-26 08:56:01'),(2,NULL,'folder 2',3,'2014-12-26 08:56:14','2014-12-26 08:56:14'),(3,NULL,'folder 1',4,'2014-12-26 09:42:18','2014-12-26 09:42:32'),(4,NULL,'folder 2',4,'2014-12-26 09:42:25','2014-12-26 09:42:25'),(5,3,'folder 3',4,'2014-12-26 09:42:32','2014-12-26 09:42:32'),(6,NULL,'folder 1',5,'2014-12-26 11:22:35','2014-12-26 11:22:53'),(7,6,'folder 3',5,'2014-12-26 11:22:53','2014-12-26 11:22:53'),(8,NULL,'folder 2',5,'2014-12-26 11:31:52','2014-12-26 11:31:52'),(9,NULL,'folder 4',5,'2014-12-26 11:35:54','2014-12-26 11:35:54'),(10,NULL,'folder 5',5,'2014-12-26 11:37:48','2014-12-26 11:37:48'),(11,NULL,'folder 6',5,'2014-12-26 11:41:29','2014-12-26 11:41:42'),(12,11,'sub folder',5,'2014-12-26 11:41:42','2014-12-26 11:41:42');
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,13 +94,13 @@ CREATE TABLE `repositories` (
   `repositoryID` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `userID` int(11) NOT NULL,
-  `datecreated` datetime DEFAULT NULL,
-  `dateupdated` datetime DEFAULT NULL,
+  `datecreated` timestamp NULL DEFAULT NULL,
+  `dateupdated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`repositoryID`),
   UNIQUE KEY `repositoryID_UNIQUE` (`repositoryID`),
   KEY `fk_repositories_users_idx` (`userID`),
   CONSTRAINT `fk_repositories_users` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +109,7 @@ CREATE TABLE `repositories` (
 
 LOCK TABLES `repositories` WRITE;
 /*!40000 ALTER TABLE `repositories` DISABLE KEYS */;
-INSERT INTO `repositories` VALUES (1,'personal rep',5,'2014-11-22 15:32:06','2014-11-22 15:32:06'),(2,'personal rep',5,'2014-11-22 15:32:47','2014-11-22 15:32:47'),(3,'my personal rep',5,'2014-11-24 16:23:19','2014-11-24 16:23:19'),(4,'personal rep',5,'2014-11-24 16:48:15','2014-11-24 16:48:15'),(5,'personal rep',5,'2014-11-24 16:55:19','2014-11-24 16:55:19'),(6,'persoanl hub',5,'2014-11-24 16:56:34','2014-11-24 16:56:34'),(7,'personal hub',5,'2014-11-24 16:59:08','2014-11-24 16:59:08'),(8,'personal hub',5,'2014-11-24 17:02:10','2014-11-24 17:02:10'),(9,'personal hub',5,'2014-11-24 17:03:03','2014-11-24 17:03:03'),(10,'personal repository',5,'2014-11-24 17:07:12','2014-11-24 17:07:12'),(11,'personal rep',5,'2014-11-24 17:09:34','2014-11-24 17:09:34'),(12,'persoanl rep',5,'2014-11-24 17:12:09','2014-11-24 17:12:09'),(13,'personal',5,'2014-11-24 17:18:08','2014-11-24 17:18:08'),(14,'ssfdd',5,'2014-11-24 17:25:18','2014-11-24 17:25:18'),(15,'erfds',5,'2014-11-24 17:28:40','2014-11-24 17:28:40');
+INSERT INTO `repositories` VALUES (3,'personal',5,'2014-12-26 08:55:55','2014-12-26 08:56:14'),(4,'personal 2',5,'2014-12-26 09:42:14','2014-12-26 09:42:32'),(5,'my rep',4,'2014-12-26 11:22:30','2014-12-26 11:41:42');
 /*!40000 ALTER TABLE `repositories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,7 +126,7 @@ CREATE TABLE `users` (
   `email` varchar(1000) NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `userID_UNIQUE` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +135,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (4,'dn14500@my.bristol.ac.uk','dn14500@my.bristol.ac.uk'),(5,'dhiraj.narwani','dhiraj.narwani@gmail.com');
+INSERT INTO `users` VALUES (4,'dn14500@my.bristol.ac.uk','dn14500@my.bristol.ac.uk'),(5,'dhiraj.narwani','dhiraj.narwani@gmail.com'),(6,'test3424@example.com','test3424@example.com');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -149,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-24 21:12:58
+-- Dump completed on 2014-12-26 11:43:50

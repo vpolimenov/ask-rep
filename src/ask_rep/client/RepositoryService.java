@@ -10,4 +10,5 @@ public interface RepositoryService extends RemoteService {
 	public int insertRepository(String Name, int UserID);
 	public RepositoryInfo getRepository(int RepositoryID);
 	public List<RepositoryInfo> getRepositoryByUserID(int UserID);
+	public List<RepositoryInfo> getLatestRepositories(int UserID);
 }

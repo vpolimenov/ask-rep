@@ -1,7 +1,7 @@
 package ask_rep.client;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @SuppressWarnings("serial")
 public class FolderInfo implements Serializable {
@@ -9,8 +9,8 @@ public class FolderInfo implements Serializable {
 	private int folderID;
 	private int parentFolderID;
 	private String name;
-	private Date datecreated;
-	private Date dateupdated;
+	private Timestamp datecreated;
+	private Timestamp dateupdated;
 	private RepositoryInfo repository;
 	
 	public int getFolderID() {
@@ -31,16 +31,16 @@ public class FolderInfo implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getDatecreated() {
+	public Timestamp getDatecreated() {
 		return datecreated;
 	}
-	public void setDatecreated(Date datecreated) {
+	public void setDatecreated(Timestamp datecreated) {
 		this.datecreated = datecreated;
 	}
-	public Date getDateupdated() {
+	public Timestamp getDateupdated() {
 		return dateupdated;
 	}
-	public void setDateupdated(Date dateupdated) {
+	public void setDateupdated(Timestamp dateupdated) {
 		this.dateupdated = dateupdated;
 	}
 	public RepositoryInfo getRepository() {

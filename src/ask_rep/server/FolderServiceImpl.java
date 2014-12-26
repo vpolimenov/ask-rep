@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -31,9 +33,9 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 			String objStatement;
 			
 			if(ParentFolderID == 0) {
-				objStatement = "INSERT INTO folders (name, repositoryID, datecreated, dateupdated) VALUES(?, ?, NOW(), NOW())";
+				objStatement = "INSERT INTO folders (name, repositoryID, datecreated, dateupdated) VALUES(?, ?, ?, ?)";
 			} else {
-				objStatement = "INSERT INTO folders (parentFolderID, name, repositoryID, datecreated, dateupdated) VALUES(?, ?, ?, NOW(), NOW())";
+				objStatement = "INSERT INTO folders (parentFolderID, name, repositoryID, datecreated, dateupdated) VALUES(?, ?, ?, ?, ?)";
 			}
 			
 			PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
@@ -41,10 +43,14 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 			if(ParentFolderID == 0) {
 				objPrepStatement.setString(1, Name);
 				objPrepStatement.setInt(2, repositoryID);
+				objPrepStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+				objPrepStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
 			} else {
 				objPrepStatement.setInt(1, ParentFolderID);
 				objPrepStatement.setString(2,  Name);
 				objPrepStatement.setInt(3, repositoryID);
+				objPrepStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+				objPrepStatement.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
 			}
 
 			objPrepStatement.executeUpdate();
@@ -53,8 +59,24 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 
 			if (rs.next()) {
 				folderID = rs.getInt(1);
+				
+				String strRepStatement = "UPDATE repositories SET dateupdated = ? WHERE repositoryID = ?";	
+				PreparedStatement objRepPrepStatement = myConnection.prepareStatement(strRepStatement);
+				objRepPrepStatement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+				objRepPrepStatement.setInt(2, repositoryID);
+				
+				objRepPrepStatement.executeUpdate();
+				
+				if(ParentFolderID > 0) {
+					String strFoldStatement = "UPDATE folders SET dateupdated = ? WHERE folderID = ?";
+					PreparedStatement objFoldPrepStatement = myConnection.prepareStatement(strFoldStatement);
+					objFoldPrepStatement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+					objFoldPrepStatement.setInt(2, ParentFolderID);			
+					
+					objFoldPrepStatement.executeUpdate();
+				}
 			}
-
+			
 		} catch (SQLException e) {
 
 		}
@@ -95,8 +117,8 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 				
 				RepositoryInfo objRepInfo = repService.getRepository(rs.getInt(4));
 
-				objFolderInfo.setDatecreated(rs.getDate(5));
-				objFolderInfo.setDateupdated(rs.getDate(6));
+				objFolderInfo.setDatecreated(rs.getTimestamp(5));
+				objFolderInfo.setDateupdated(rs.getTimestamp(6));
 				objFolderInfo.setRepository(objRepInfo);
 				
 				lstFolders.add(objFolderInfo);
@@ -131,8 +153,8 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 				RepositoryInfo objRepInfo = repService.getRepository(rs.getInt(4));
 				objFolderInfo.setRepository(objRepInfo);
 				
-				objFolderInfo.setDatecreated(rs.getDate(5));
-				objFolderInfo.setDateupdated(rs.getDate(6));	
+				objFolderInfo.setDatecreated(rs.getTimestamp(5));
+				objFolderInfo.setDateupdated(rs.getTimestamp(6));	
 			}
 			
 		} catch(SQLException e) {

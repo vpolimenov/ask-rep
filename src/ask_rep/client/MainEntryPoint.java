@@ -1,66 +1,41 @@
 package ask_rep.client;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-import javax.swing.JEditorPane;
-import javax.swing.text.Highlighter;
-
-import org.apache.commons.el.Literal;
-
 import ask_rep.shared.Snippet;
-import ask_rep.shared.SnippetContainer;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Element;
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.editor.client.Editor;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
-
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -76,13 +51,12 @@ public class MainEntryPoint implements EntryPoint {
 	Anchor lnkSignIn;
 	LoginInfo objLoginInfo = null;
 	String language;
-	DateTimeFormat objDateFormat = DateTimeFormat
-			.getFormat("dd/MM/yyyy HH:mm:ss");
 	SectionStack objSectionStack;
-
+	DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
+	
 	TextBox fileName = null;
 	String fileToDatabase = " ";
-	String[] languages = new String[] { "Java", "C++", "Python", "C#" };
+	String [] languages = new String[]{"JavaScript", "Java", "C++", "Python", "C#"};
 	ListBox languageChoose;
 
 	private int minLength = 100;
@@ -111,16 +85,11 @@ public class MainEntryPoint implements EntryPoint {
 	private final RepositoryServiceAsync objRepService = GWT
 			.create(RepositoryService.class);
 
-	private final FileServiceAsync objFileService = GWT
-			.create(FileService.class);
-	
 	private final FolderServiceAsync objFoldService = GWT
 			.create(FolderService.class);
 
-//	private final FileServiceAsync objFileService = GWT
-//			.create(FileService.class);
-
-	private final UserServiceAsync usrService = GWT.create(UserService.class);
+	private final FileServiceAsync objFileService = GWT
+			.create(FileService.class);
 
 	/**
 	 * This is the entry point method.
@@ -130,20 +99,18 @@ public class MainEntryPoint implements EntryPoint {
 		login();
 
 		initializeComponents();
-		loadTrendingRepositoryPanel();
 	}
 
 	public void initializeComponents() {
 
 		Anchor lnkTrendingRepositories = new Anchor();
 		lnkTrendingRepositories.setText("Trending Repositories");
-		// Add a handler to close the DialogBox
 		lnkTrendingRepositories.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
-				loadTrendingRepositoryPanel();
+				loadTrendingRepositoryPanel(UserID);
 			}
 
 		});
@@ -155,8 +122,7 @@ public class MainEntryPoint implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 
-				objSessionService.validateSession("UserID",
-						new AsyncCallback<Boolean>() {
+				objSessionService.validateSession("UserID", new AsyncCallback<Boolean>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -171,40 +137,37 @@ public class MainEntryPoint implements EntryPoint {
 								if (result) {
 									loadRepositoryPanel(1);
 								} else {
-
-									final HTML wrapper = new HTML(
-											"<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
-
-									dialogbox = new DialogBox(false);
-									dialogbox.setStyleName("dialog");
-
-									VerticalPanel vpDialogContent = new VerticalPanel();
-
-									HTML htmlMessage = new HTML(
-											"Please sign in to continue");
-									Button btnClose = new Button("Close");
-									btnClose.setStylePrimaryName("dialog-button");
-									btnClose.addClickHandler(new ClickHandler() {
+									
+									final HTML wrapper = new HTML("<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
+									   
+								    dialogbox = new DialogBox(false);
+								    dialogbox.setStyleName("dialog");
+								    
+								    VerticalPanel vpDialogContent = new VerticalPanel();
+								    
+								    HTML htmlMessage = new HTML("Please sign in to continue");
+								    Button btnClose = new Button("Close");
+								    btnClose.setStylePrimaryName("dialog-button");
+								    btnClose.addClickHandler(new ClickHandler() {
 
 										@Override
 										public void onClick(ClickEvent event) {
 											// TODO Auto-generated method stub
-											RootPanel.get("mainContent")
-													.remove(wrapper);
+											RootPanel.get("mainContent").remove(wrapper);
 											dialogbox.hide();
 										}
-
+										
 									});
-
+								
 									SimplePanel holder = new SimplePanel();
-									holder.add(btnClose);
+								    holder.add(btnClose);
 
-									vpDialogContent.add(htmlMessage);
-									vpDialogContent.add(holder);
-									dialogbox.setWidget(vpDialogContent);
+								    vpDialogContent.add(htmlMessage);
+								    vpDialogContent.add(holder);
+								    dialogbox.setWidget(vpDialogContent);
 
-									RootPanel.get("mainContent").add(wrapper);
-									dialogbox.center();
+								    RootPanel.get("mainContent").add(wrapper);
+								    dialogbox.center();
 								}
 
 								/*
@@ -226,55 +189,51 @@ public class MainEntryPoint implements EntryPoint {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				objSessionService.validateSession("UserID",
-						new AsyncCallback<Boolean>() {
+				objSessionService.validateSession("UserID", new AsyncCallback<Boolean>() {
 
-							@Override
-							public void onFailure(Throwable caught) {
+					@Override
+					public void onFailure(Throwable caught) {
+											
+					}
 
-							}
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result){
+							loadRepositoryPanel(2);
+						}else{
+						    final HTML wrapper = new HTML("<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
+							   
+						    dialogbox = new DialogBox(false);
+						    dialogbox.setStyleName("dialog");
+						    
+						    VerticalPanel vpDialogContent = new VerticalPanel();
+						    
+						    HTML htmlMessage = new HTML("Please sign in to continue");
+						    Button btnClose = new Button("Close");
+						    btnClose.setStylePrimaryName("dialog-button");
+						    btnClose.addClickHandler(new ClickHandler() {
 
-							@Override
-							public void onSuccess(Boolean result) {
-								if (result) {
-									loadRepositoryPanel(2);
-								} else {
-									final HTML wrapper = new HTML(
-											"<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
-
-									dialogbox = new DialogBox(false);
-									dialogbox.setStyleName("dialog");
-
-									VerticalPanel vpDialogContent = new VerticalPanel();
-
-									HTML htmlMessage = new HTML(
-											"Please sign in to continue");
-									Button btnClose = new Button("Close");
-									btnClose.setStylePrimaryName("dialog-button");
-									btnClose.addClickHandler(new ClickHandler() {
-
-										@Override
-										public void onClick(ClickEvent event) {
-											// TODO Auto-generated method stub
-											RootPanel.get("mainContent")
-													.remove(wrapper);
-											dialogbox.hide();
-										}
-
-									});
-
-									SimplePanel holder = new SimplePanel();
-									holder.add(btnClose);
-
-									vpDialogContent.add(htmlMessage);
-									vpDialogContent.add(holder);
-									dialogbox.setWidget(vpDialogContent);
-
-									RootPanel.get("mainContent").add(wrapper);
-									dialogbox.center();
+								@Override
+								public void onClick(ClickEvent event) {
+									// TODO Auto-generated method stub
+									RootPanel.get("mainContent").remove(wrapper);
+									dialogbox.hide();
 								}
-							}
-						});
+								
+							});
+						
+							SimplePanel holder = new SimplePanel();
+						    holder.add(btnClose);
+
+						    vpDialogContent.add(htmlMessage);
+						    vpDialogContent.add(holder);
+						    dialogbox.setWidget(vpDialogContent);
+
+						    RootPanel.get("mainContent").add(wrapper);
+						    dialogbox.center();
+						}
+					}
+				});
 			}
 		});
 
@@ -296,45 +255,31 @@ public class MainEntryPoint implements EntryPoint {
 
 						if (loginResult.isLoggedIn()) {
 
-							final String strEmail = loginResult
-									.getEmailAddress();
+							final String strEmail = loginResult.getEmailAddress();
 							final String strName = loginResult.getNickname();
 
 							lnkSignIn = new Anchor(strEmail + ", Sign Out");
 							lnkSignIn.setHref(loginResult.getLogoutUrl());
 
-							objUserService.checkUserExists(strEmail,
-									new AsyncCallback<Integer>() {
+							objUserService.checkUserExists(strEmail, new AsyncCallback<Integer>() {
 
 										@Override
-										public void onSuccess(
-												final Integer userExistsResult) {
+										public void onSuccess(final Integer userExistsResult) {
 											// TODO Auto-generated method stub
 											if (userExistsResult == 0) {
 
-												objUserService
-														.insertUser(
-																strName,
-																strEmail,
-																new AsyncCallback<Integer>() {
+												objUserService.insertUser(strName, strEmail, new AsyncCallback<Integer>() {
 
 																	@Override
-																	public void onSuccess(
-																			final Integer insertUserResult) {
+																	public void onSuccess(final Integer insertUserResult) {
 																		// TODO
 																		// Auto-generated
 																		// method
 																		// stub
-																		objSessionService
-																				.createSession(
-																						"UserID",
-																						insertUserResult
-																								.toString(),
-																						new AsyncCallback<Void>() {
+																		objSessionService.createSession("UserID", insertUserResult.toString(), new AsyncCallback<Void>() {
 
 																							@Override
-																							public void onFailure(
-																									Throwable caught) {
+																							public void onFailure(Throwable caught) {
 																								// TODO
 																								// Auto-generated
 																								// method
@@ -343,13 +288,13 @@ public class MainEntryPoint implements EntryPoint {
 																							}
 
 																							@Override
-																							public void onSuccess(
-																									Void result) {
+																							public void onSuccess(Void result) {
 																								// TODO
 																								// Auto-generated
 																								// method
 																								// stub
 																								UserID = insertUserResult;
+																								loadTrendingRepositoryPanel(insertUserResult);
 																							}
 																						});
 																	}
@@ -367,16 +312,10 @@ public class MainEntryPoint implements EntryPoint {
 																});
 
 											} else {
-												objSessionService
-														.createSession(
-																"UserID",
-																userExistsResult
-																		.toString(),
-																new AsyncCallback<Void>() {
+												objSessionService.createSession("UserID",userExistsResult.toString(), new AsyncCallback<Void>() {
 
 																	@Override
-																	public void onFailure(
-																			Throwable caught) {
+																	public void onFailure(Throwable caught) {
 																		// TODO
 																		// Auto-generated
 																		// method
@@ -385,13 +324,13 @@ public class MainEntryPoint implements EntryPoint {
 																	}
 
 																	@Override
-																	public void onSuccess(
-																			Void result) {
+																	public void onSuccess(Void result) {
 																		// TODO
 																		// Auto-generated
 																		// method
 																		// stub
 																		UserID = userExistsResult;
+																		loadTrendingRepositoryPanel(userExistsResult);
 																	}
 																});
 											}
@@ -407,11 +346,13 @@ public class MainEntryPoint implements EntryPoint {
 									});
 
 						} else {
+							
+							loadTrendingRepositoryPanel(0);
+							
 							lnkSignIn = new Anchor("Sign In");
 							lnkSignIn.setHref(loginResult.getLoginUrl());
 
-							objSessionService.invalidateSession("UserID",
-									new AsyncCallback<Void>() {
+							objSessionService.invalidateSession("UserID", new AsyncCallback<Void>() {
 
 										@Override
 										public void onFailure(Throwable caught) {
@@ -422,7 +363,6 @@ public class MainEntryPoint implements EntryPoint {
 										@Override
 										public void onSuccess(Void result) {
 											// TODO Auto-generated method stub
-
 										}
 									});
 						}
@@ -462,62 +402,72 @@ public class MainEntryPoint implements EntryPoint {
 					final String strRepository = txtRepositoryName.getText();
 
 					if (strRepository == null || strRepository.equals("")) {
-						Window.alert("Repository Name empty!");
-					} else {
+						final HTML wrapper = new HTML("<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
+						   
+					    dialogbox = new DialogBox(false);
+					    dialogbox.setStyleName("dialog");
+					    
+					    VerticalPanel vpDialogContent = new VerticalPanel();
+					    
+					    HTML htmlMessage = new HTML("Please insert a repository name");
+					    Button btnClose = new Button("Close");
+					    btnClose.setStylePrimaryName("dialog-button");
+					    btnClose.addClickHandler(new ClickHandler() {
 
-						
-						  objRepService.insertRepository(strRepository, UserID,
-						  new AsyncCallback<Integer>() {
+							@Override
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								RootPanel.get("mainContent").remove(wrapper);
+								dialogbox.hide();
+							}
+							
+						});
+					
+						SimplePanel holder = new SimplePanel();
+					    holder.add(btnClose);
+
+					    vpDialogContent.add(htmlMessage);
+					    vpDialogContent.add(holder);
+					    dialogbox.setWidget(vpDialogContent);
+
+					    RootPanel.get("mainContent").add(wrapper);
+					    dialogbox.center();
+					} else {	
+						  objRepService.insertRepository(strRepository, UserID, new AsyncCallback<Integer>() {
 						  
-						  @Override public void onFailure(Throwable caught) {
-						  // TODO Auto-generated method stub
-						  Window.alert(caught.getMessage()); }
-						  
-						  @Override public void onSuccess(Integer repositoryID)
-						  { // TODO Auto-generated method stub
-						  
-						  objRepService.getRepository(repositoryID, new
-						  AsyncCallback<RepositoryInfo>() {
-						  
-						  @Override public void onFailure(Throwable caught) {
-						  // TODO Auto-generated method stub
-						  
-						  }
-						  
-						  @Override public void onSuccess(RepositoryInfo
-						  result) { // TODO Auto-generated method stub
-						  loadCreateRepPanel(result, 1); }
-						  
+							  @Override 
+							  public void onFailure(Throwable caught) {
+								  // TODO Auto-generated method stub
+								  Window.alert(caught.getMessage()); 
+							  }
+							  
+							  @Override 
+							  public void onSuccess(Integer repositoryID)
+							  { 
+								  // TODO Auto-generated method stub				  
+								  objRepService.getRepository(repositoryID, new AsyncCallback<RepositoryInfo>() {
+								  
+									  @Override public void onFailure(Throwable caught) {
+									  // TODO Auto-generated method stub
+									  }
+								  
+									  @Override 
+									  public void onSuccess(RepositoryInfo result) { // TODO Auto-generated method stub
+										  loadCreateRepPanel(result, option); 
+									  };
+								  });
+							  }
 						  });
-						  
-						  } });
-						 
-
-						objRepService.getRepository(1,
-								new AsyncCallback<RepositoryInfo>() {
-
-									@Override
-									public void onSuccess(RepositoryInfo result) {
-										// TODO Auto-generated method stub
-										loadCreateRepPanel(result, option);
-									}
-
-									@Override
-									public void onFailure(Throwable caught) {
-										// TODO Auto-generated method stub
-										Window.alert(caught.getMessage());
-									}
-								});
 					}
 				}
 			}
 		});
 
 		HTML existRep = new HTML();
-		existRep.setHTML("<hr class='hrStyle'>"
-				+ "<p><b>Select a repository below to "
-				+ (option == 1 ? "upload" : "create") + " your files.</b></p>");
+		existRep.setHTML("<hr class='hrStyle'>" + "<p><b>Select a repository below to " + (option == 1 ? "upload" : "create") + " your files.</b></p>");
 
+		
+		
 		// add existing repositories, listview ..
 
 		vpCenterLayout = new VerticalPanel();
@@ -525,113 +475,95 @@ public class MainEntryPoint implements EntryPoint {
 		vpCenterLayout.add(txtRepositoryName);
 		vpCenterLayout.add(btnCreate);
 		vpCenterLayout.add(existRep);
+		
+		if(UserID != 0) {
+			
+			objRepService.getRepositoryByUserID(UserID, new AsyncCallback<List<RepositoryInfo>>() {
+	
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void onSuccess(List<RepositoryInfo> result) {
+					// TODO Auto-generated method stub
 
-		if (UserID != 0) {
-
-			objRepService.getRepositoryByUserID(UserID,
-					new AsyncCallback<List<RepositoryInfo>>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-
+					String strRepositories = "<table>";
+					
+					List<Anchor> lstRepositoryAnchors = new ArrayList<Anchor>();
+					
+					for(int i =0; i < result.size(); i++) {
+						
+						final RepositoryInfo objRepository = result.get(i);
+						
+						if((i+1) % 4 == 1) {
+							strRepositories += "<tr>";
 						}
-
-						@Override
-						public void onSuccess(List<RepositoryInfo> result) {
-							// TODO Auto-generated method stub
-
-							String strRepositories = "<table>";
-
-							List<Anchor> lstRepositoryAnchors = new ArrayList<Anchor>();
-
-							for (int i = 0; i < result.size(); i++) {
-
-								final RepositoryInfo objRepository = result
-										.get(i);
-
-								if ((i + 1) % 4 == 1) {
-									strRepositories += "<tr>";
-								}
-
-								Anchor lnkRepository = new Anchor();
-
-								if ((i + 1) % 4 == 1) {
-									lnkRepository
-											.setHTML("<div class='repositoryitem' style='margin-left:0px'>"
-													+ objRepository.getName()
-													+ "</div>");
-								} else {
-									lnkRepository
-											.setHTML("<div class='repositoryitem'>"
-													+ objRepository.getName()
-													+ "</div>");
-
-								}
-
-								lnkRepository
-										.addClickHandler(new ClickHandler() {
-
-											@Override
-											public void onClick(ClickEvent event) {
-												// TODO Auto-generated method
-												// stub
-												loadCreateRepPanel(
-														objRepository, option);
-											}
-										});
-
-								strRepositories += "<td><div id='lnkRepository"
-										+ i + "'></div></td>";
-								lstRepositoryAnchors.add(lnkRepository);
-
-								if ((i + 1) % 4 == 0) {
-									strRepositories += "</tr>";
-								}
-							}
-
-							strRepositories += "</table>";
-
-							HTMLPanel hRepositories = new HTMLPanel(
-									strRepositories);
-							if (lstRepositoryAnchors.size() > 0) {
-								for (int i = 0; i < lstRepositoryAnchors.size(); i++) {
-									hRepositories.add(
-											lstRepositoryAnchors.get(i),
-											"lnkRepository" + i);
-								}
-							}
-
-							vpCenterLayout.add(hRepositories);
+						
+						Anchor lnkRepository = new Anchor();	
+						
+						if((i+1) % 4 == 1)  {					
+							lnkRepository.setHTML("<div class='repositoryitem' style='margin-left:0px'>" + objRepository.getName() + "</div>");
 						}
-					});
+						else {
+							lnkRepository.setHTML("<div class='repositoryitem'>" + objRepository.getName() + "</div>");
+				
+						}
+						
+						lnkRepository.addClickHandler(new ClickHandler() {
+							
+							@Override
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								loadCreateRepPanel(objRepository, option);
+							}
+						});
+						
+						strRepositories += "<td><div id='lnkRepository" + i + "'></div></td>";
+						lstRepositoryAnchors.add(lnkRepository);
+						
+						if((i+1) % 4 == 0) {
+							strRepositories += "</tr>";
+						}
+					}
+					
+					strRepositories += "</table>";
+					
+					HTMLPanel hRepositories = new HTMLPanel(strRepositories);
+					if (lstRepositoryAnchors.size() > 0) {
+						for (int i = 0; i < lstRepositoryAnchors.size(); i++) {
+							hRepositories.add(lstRepositoryAnchors.get(i), "lnkRepository" + i);
+						}
+					}
+					
+					vpCenterLayout.add(hRepositories);
+				}	
+			});
 		}
 
 		RootPanel.get("mainContent").add(vpCenterLayout);
 		RootPanel.get("contentHeadWrapper").add(contentTitle);
 
 	}
+	
 
-	public void loadCreateRepPanel(final RepositoryInfo repository,
-			final int option) {
+	public void loadCreateRepPanel(final RepositoryInfo repository, final int option) {
 
 		RootPanel.get("mainContent").clear();
 		RootPanel.get("contentHeadWrapper").setStyleName("repTitleWrapper");
 		RootPanel.get("contentHeadWrapper").clear();
 
-		final String strNav = "<b style='color:black'>" + repository.getName()
-				+ "<b>";
+		final String strNav = "<b style='color:black'>" + repository.getName() + "<b>";
 
 		Label lblCreatedDate = new Label();
-		lblCreatedDate.setText("created on "
-				+ objDateFormat.format(repository.getCreatedDate()));
+		lblCreatedDate.setText("updated on " + dateFormat.format(repository.getUpdatedDate()));
 
 		String htmlContentTitle = "";
 		htmlContentTitle = "<div id='contentHead'>";
 		htmlContentTitle += "<div id='contentHeaderTitle' class='repTitle'>";
-		htmlContentTitle += "<span>"
-				+ repository.getUser().getName()
-				+ "</span> / <span id='lnkRepository' class='lnkRepTitle'></span>";
+		htmlContentTitle += "<span>" + repository.getUser().getName() + "</span> / <span id='lnkRepository' class='lnkRepTitle'></span>";
 		htmlContentTitle += "</div>";
 		htmlContentTitle += "<div class='created_date'>";
 		htmlContentTitle += lblCreatedDate.getText();
@@ -650,10 +582,9 @@ public class MainEntryPoint implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				RootPanel.get("mainContent").remove(1);
-				RootPanel.get("mainContent").getWidget(0).getElement()
-						.setInnerHTML(strNav);
+				RootPanel.get("mainContent").getWidget(0).getElement().setInnerHTML(strNav);
 
-				printRepository(repository.getRepositoryID(), 0, strNav, option);
+				printRepository(repository, 0, strNav, option);
 			}
 
 		});
@@ -662,15 +593,14 @@ public class MainEntryPoint implements EntryPoint {
 		contentTitle.add(lnkRepository, "lnkRepository");
 		RootPanel.get("contentHeadWrapper").add(contentTitle);
 
-		printRepository(repository.getRepositoryID(), 0, strNav, option);
+		printRepository(repository, 0, strNav, option);
 	}
 
-	public void printRepository(final int repositoryID,
-			final int parentFolderID, final String Navigation, final int option) {
+	public void printRepository(final RepositoryInfo repository, final int parentFolderID, final String Navigation, final int option) {
 
 		hpCenterLayout = new HorizontalPanel();
 
-		objFoldService.getFolders(repositoryID, parentFolderID,
+		objFoldService.getFolders(repository.getRepositoryID(), parentFolderID,
 				new AsyncCallback<List<FolderInfo>>() {
 
 					String htmlRepository = "<div id='repositoryGrid' class='repGridWrapper'>";
@@ -691,6 +621,7 @@ public class MainEntryPoint implements EntryPoint {
 							lnkPrevious = new Anchor();
 							lnkPrevious.setText("...");
 							lnkPrevious.setStyleName("lnkItemTitle");
+							
 							lnkPrevious.addClickHandler(new ClickHandler() {
 
 								@Override
@@ -707,50 +638,21 @@ public class MainEntryPoint implements EntryPoint {
 													// TODO Auto-generated
 													// method stub
 
-													NavigateText = NavigateText
-															.substring(
-																	0,
-																	NavigateText
-																			.lastIndexOf('/'));
+													NavigateText = NavigateText.substring(0, NavigateText.lastIndexOf('/'));
 
-													if (!NavigateText
-															.contains("/")) {
-														NavigateText = NavigateText
-																.replaceAll(
-																		"rgb\\(153\\,201\\,198\\)",
-																		"black");
+													if (!NavigateText.contains("/")) {
+														NavigateText = NavigateText.replaceAll("rgb\\(153\\,201\\,198\\)","black");
 													} else {
-														String start = NavigateText
-																.substring(
-																		0,
-																		NavigateText
-																				.lastIndexOf('/'));
-														String end = NavigateText.substring(
-																NavigateText
-																		.lastIndexOf('/'),
-																NavigateText
-																		.length());
+														String start = NavigateText.substring(0, NavigateText.lastIndexOf('/'));
+														String end = NavigateText.substring(NavigateText.lastIndexOf('/'),NavigateText.length());
 
-														end = end
-																.replaceAll(
-																		"rgb\\(153\\,201\\,198\\)",
-																		"black");
-														NavigateText = start
-																+ end;
+														end = end.replaceAll("rgb\\(153\\,201\\,198\\)","black");
+														NavigateText = start + end;
 													}
 
-													RootPanel
-															.get("mainContent")
-															.getWidget(0)
-															.getElement()
-															.setInnerHTML(
-																	NavigateText);
+													RootPanel.get("mainContent").getWidget(0).getElement().setInnerHTML(NavigateText);
 
-													printRepository(
-															repositoryID,
-															result.getParentFolderID(),
-															NavigateText,
-															option);
+													printRepository(repository,result.getParentFolderID(), NavigateText, option);
 												}
 
 												@Override
@@ -788,36 +690,24 @@ public class MainEntryPoint implements EntryPoint {
 
 										RootPanel.get("mainContent").remove(1);
 
-										NavigateText = NavigateText.replaceAll(
-												"black", "rgb(153,201,198)");
-										NavigateText += " / "
-												+ "<b style='color:black'>"
-												+ objFoldInfo.getName() + "<b>";
-										RootPanel.get("mainContent")
-												.getWidget(0).getElement()
-												.setInnerHTML(NavigateText);
+										NavigateText = NavigateText.replaceAll("black", "rgb(153,201,198)");
+										NavigateText += " / " + "<b style='color:black'>" + objFoldInfo.getName() + "<b>";
+										RootPanel.get("mainContent").getWidget(0).getElement().setInnerHTML(NavigateText);
 
-										printRepository(objFoldInfo
-												.getRepository()
-												.getRepositoryID(), objFoldInfo
-												.getFolderID(), NavigateText,
-												option);
+										printRepository(objFoldInfo.getRepository(), objFoldInfo.getFolderID(), NavigateText, option);
 									}
 
 								});
 
-								htmlRepository += "<td><div id='lnkFolder" + i
-										+ "'></div></td>";
-								htmlRepository += "<td style='text-align:right'>"
-										+ objDateFormat.format(objFoldInfo
-												.getDatecreated()) + "</td>";
+								htmlRepository += "<td><div id='lnkFolder" + i + "'></div></td>";
+								htmlRepository += "<td style='text-align:right'>" + "updated on " + dateFormat.format(objFoldInfo.getDateupdated()) + "</td>";
 								htmlRepository += "</tr>";
 
 								lstFolderAnchors.add(lnkName);
 							}
 						}
 
-						objFileService.getFiles(repositoryID, parentFolderID,
+						objFileService.getFiles(repository.getRepositoryID(), parentFolderID,
 								new AsyncCallback<List<FileInfo>>() {
 
 									@Override
@@ -832,10 +722,7 @@ public class MainEntryPoint implements EntryPoint {
 												htmlRepository += "<tr>";
 
 												Anchor lnkName = new Anchor();
-												lnkName.setText(objFileInfo
-														.getName()
-														+ objFileInfo
-																.getExtension());
+												lnkName.setText(objFileInfo.getName() + objFileInfo.getExtension());
 												lnkName.setStyleName("lnkItemTitle");
 
 												lnkName.addClickHandler(new ClickHandler() {
@@ -850,13 +737,8 @@ public class MainEntryPoint implements EntryPoint {
 
 												});
 
-												htmlRepository += "<td><div id='lnkFile"
-														+ i + "'></div></td>";
-												htmlRepository += "<td style='text-align:right'>"
-														+ objDateFormat
-																.format(objFileInfo
-																		.getDatecreated())
-														+ "</td>";
+												htmlRepository += "<td><div id='lnkFile" + i + "'></div></td>";
+												htmlRepository += "<td style='text-align:right'>" + "created on " + dateFormat.format(objFileInfo.getDatecreated()) + "</td>";
 												htmlRepository += "</tr>";
 
 												lstFileAnchors.add(lnkName);
@@ -865,91 +747,73 @@ public class MainEntryPoint implements EntryPoint {
 
 										htmlRepository += "</table>";
 
-										contentRepository = new HTMLPanel(
-												htmlRepository);
+										contentRepository = new HTMLPanel(htmlRepository);
 
 										if (lstFolderAnchors.size() > 0) {
-											for (int i = 0; i < lstFolderAnchors
-													.size(); i++) {
-												contentRepository.add(
-														lstFolderAnchors.get(i),
-														"lnkFolder" + i);
+											for (int i = 0; i < lstFolderAnchors.size(); i++) {
+												contentRepository.add(lstFolderAnchors.get(i), "lnkFolder" + i);
 											}
 										}
 										if (lstFileAnchors.size() > 0) {
-											for (int i = 0; i < lstFileAnchors
-													.size(); i++) {
-												contentRepository.add(
-														lstFileAnchors.get(i),
-														"lnkFile" + i);
+											for (int i = 0; i < lstFileAnchors.size(); i++) {
+												contentRepository.add(lstFileAnchors.get(i), "lnkFile" + i);
 											}
 										}
 										if (parentFolderID != 0) {
-											contentRepository.add(lnkPrevious,
-													"repRoot");
+											contentRepository.add(lnkPrevious, "repRoot");
 										}
 
 										// Add Repository Grid to Horizontal
 										// Panel
 										hpCenterLayout.add(contentRepository);
+										
+										if(option > 0) {
 
-										Anchor createFolder = new Anchor();
-										createFolder.setText("Create Folder");
-										createFolder
-												.setStyleName("lnkItemTitle");
-
-										createFolder
-												.addClickHandler(new ClickHandler() {
-
-													@Override
-													public void onClick(
-															ClickEvent event) {
-														// TODO Auto-generated
-														// method stub
-														loadCreateFolderPanel(
-																parentFolderID,
-																repositoryID,
-																Navigation,
-																option);
-													}
-
-												});
-
-										// Add Create File link to Horizontal
-										// Panel
-										Anchor createFile = new Anchor();
-										createFile
-												.setText(option == 1 ? "Upload"
-														: "Create" + " Files");
-										createFile.setStyleName("lnkItemTitle");
-
-										createFile
-												.addClickHandler(new ClickHandler() {
-
-													@Override
-													public void onClick(
-															ClickEvent event) {
-														// TODO Auto-generated//
-														// method stub
-														if (option == 1) {
-															loadUploadPanel();
-														} else {
-															loadCreateFilePanel();
+											Anchor createFolder = new Anchor();
+											createFolder.setText("Create Folder");
+											createFolder.setStyleName("lnkItemTitle");
+	
+											createFolder.addClickHandler(new ClickHandler() {
+	
+														@Override
+														public void onClick(ClickEvent event) {
+															// TODO Auto-generated
+															// method stub
+															loadCreateFolderPanel(parentFolderID, repository, Navigation, option);
 														}
-													}
+	
+													});
+	
+											// Add Create File link to Horizontal
+											// Panel
+											Anchor createFile = new Anchor();
+											createFile.setText(option == 1 ? "Upload Files": "Create Files");
+											createFile.setStyleName("lnkItemTitle");
+	
+											createFile.addClickHandler(new ClickHandler() {
+	
+														@Override
+														public void onClick(ClickEvent event) {
+															// TODO Auto-generated// method stub
+															if(option == 1) {
+																loadUploadPanel();
+															} else {
+																loadCreateFilePanel();
+															}
+														}
+	
+													});
+	
+											vpCenterLayout = new VerticalPanel();
+											vpCenterLayout.setStyleName("sideLinkWrapper");
+											vpCenterLayout.add(createFolder);
+											vpCenterLayout.add(createFile);
+	
+											hpCenterLayout.add(vpCenterLayout);
+										
+										}
 
-												});
-
-										vpCenterLayout = new VerticalPanel();
-										vpCenterLayout
-												.setStyleName("sideLinkWrapper");
-										vpCenterLayout.add(createFolder);
-										vpCenterLayout.add(createFile);
-
-										hpCenterLayout.add(vpCenterLayout);
-
-										RootPanel.get("mainContent").add(
-												hpCenterLayout);
+										RootPanel.get("mainContent").add(hpCenterLayout);
 
 									}
 
@@ -969,7 +833,7 @@ public class MainEntryPoint implements EntryPoint {
 				});
 	}
 
-	public void loadTrendingRepositoryPanel() {
+	public void loadTrendingRepositoryPanel(int currUserID) {
 
 		RootPanel.get("mainContent").clear();
 		RootPanel.get("contentHeadWrapper").setStyleName("contentTitle");
@@ -977,47 +841,72 @@ public class MainEntryPoint implements EntryPoint {
 		if (RootPanel.get("contentHeadWrapper").getWidgetCount() > 0)
 			RootPanel.get("contentHeadWrapper").clear();
 
-		HTMLPanel contentTitle = new HTMLPanel(
-				"<div id='contentHead'><div id='contentHeaderTitle'>Trending Repositories</div></div>");
-
-		// objSessionService.validateSession("UserID", new
-		// AsyncCallback<Boolean>() {
-		//
-		// @Override
-		// public void onSuccess(Boolean result) {
-		// // TODO Auto-generated method stub
-		// if(result){
-		// objRepService.getRepository(UserID, new
-		// AsyncCallback<RepositoryInfo>() {
-		//
-		// @Override
-		// public void onSuccess(RepositoryInfo result) {
-		// // TODO Auto-generated method stub
-		// System.out.println(result.getName());
-		// }
-		//
-		// @Override
-		// public void onFailure(Throwable caught) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
-		// }else{
-		//
-		// }
-		// }
-		//
-		// @Override
-		// public void onFailure(Throwable caught) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// });
-
-		Label myLabel = new Label("Trending ...");
-
+		HTMLPanel contentTitle = new HTMLPanel("<div id='contentHead'><div id='contentHeaderTitle'>Trending Repositories</div></div>");
+		
 		vpCenterLayout = new VerticalPanel();
-		vpCenterLayout.add(myLabel);
+		objRepService.getLatestRepositories(currUserID, new AsyncCallback<List<RepositoryInfo>>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<RepositoryInfo> result) {
+				// TODO Auto-generated method stub
+
+				String strRepositories = "<table>";
+				
+				List<Anchor> lstRepositoryAnchors = new ArrayList<Anchor>();
+				
+				for(int i =0; i < result.size(); i++) {
+					
+					final RepositoryInfo objRepository = result.get(i);
+					
+					if((i+1) % 4 == 1) {
+						strRepositories += "<tr>";
+					}
+					
+					Anchor lnkRepository = new Anchor();	
+					
+					if((i+1) % 4 == 1)  {					
+						lnkRepository.setHTML("<div class='repositoryitem' style='margin-left:0px'>" + objRepository.getName() + "</div>");
+					}
+					else {
+						lnkRepository.setHTML("<div class='repositoryitem'>" + objRepository.getName() + "</div>");
+			
+					}
+					
+					lnkRepository.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							// TODO Auto-generated method stub
+							loadCreateRepPanel(objRepository, 0);
+						}
+					});
+					
+					strRepositories += "<td><div id='lnkRepository" + i + "'></div></td>";
+					lstRepositoryAnchors.add(lnkRepository);
+					
+					if((i+1) % 4 == 0) {
+						strRepositories += "</tr>";
+					}
+				}
+				
+				strRepositories += "</table>";
+				
+				HTMLPanel hRepositories = new HTMLPanel(strRepositories);
+				if (lstRepositoryAnchors.size() > 0) {
+					for (int i = 0; i < lstRepositoryAnchors.size(); i++) {
+						hRepositories.add(lstRepositoryAnchors.get(i), "lnkRepository" + i);
+					}
+				}
+				
+				vpCenterLayout.add(hRepositories);
+			}	
+		});
 
 		RootPanel.get("mainContent").add(vpCenterLayout);
 		RootPanel.get("contentHeadWrapper").add(contentTitle);
@@ -1025,20 +914,19 @@ public class MainEntryPoint implements EntryPoint {
 
 	public void loadUploadPanel() {
 
-		final HTML wrapper = new HTML(
-				"<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
-
-		dialogbox = new DialogBox(false);
-		dialogbox.setStyleName("dialog");
-
-		VerticalPanel vpDialogContent = new VerticalPanel();
+		final HTML wrapper = new HTML("<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
+		   
+	    dialogbox = new DialogBox(false);
+	    dialogbox.setStyleName("dialog");
+	    
+	    VerticalPanel vpDialogContent = new VerticalPanel();
 
 		FileUpload upload = new FileUpload();
-		upload.setName("uploadFormElement");
-
-		Button btnClose = new Button("Upload");
-		btnClose.setStylePrimaryName("dialog-button");
-		btnClose.addClickHandler(new ClickHandler() {
+	    upload.setName("uploadFormElement");
+	    
+	    Button btnClose = new Button("Upload");
+	    btnClose.setStylePrimaryName("dialog-button");
+	    btnClose.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1046,194 +934,327 @@ public class MainEntryPoint implements EntryPoint {
 				RootPanel.get("mainContent").remove(wrapper);
 				dialogbox.hide();
 			}
-
+			
 		});
-
+	
 		SimplePanel holder = new SimplePanel();
-		holder.add(btnClose);
+	    holder.add(btnClose);
 
-		vpDialogContent.add(upload);
-		vpDialogContent.add(holder);
-		dialogbox.setWidget(vpDialogContent);
+	    vpDialogContent.add(upload);
+	    vpDialogContent.add(holder);
+	    dialogbox.setWidget(vpDialogContent);
 
-		RootPanel.get("mainContent").add(wrapper);
-		dialogbox.center();
+	    RootPanel.get("mainContent").add(wrapper);
+	    dialogbox.center();
 
 	}
-
+	
 	public void loadCreateFilePanel() {
+		
+		final HTML wrapper = new HTML("<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
+		   
+	    dialogbox = new DialogBox(false);
+	    dialogbox.setStyleName("dialog");
+	    
+	    VerticalPanel vpDialogContent = new VerticalPanel();
+	    vpDialogContent.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+	    
+	    HorizontalPanel hpFileName = new HorizontalPanel();
+	    
+	    Label lblName = new Label();
+	    lblName.setText("Name: ");
+	    lblName.setStyleName("labels-name");
 
-		final HTML wrapper = new HTML(
-				"<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
-
-		dialogbox = new DialogBox(false);
-		dialogbox.setStyleName("dialog");
-
-		VerticalPanel vpDialogContent = new VerticalPanel();
-
-		fileName = new TextBox();
-		fileName.setStylePrimaryName("dialog-textbox");
-
-		languageChoose = new ListBox();
-
-		for (int i = 0; i < languages.length; i++) {
+	    fileName = new TextBox();
+	    fileName.setStylePrimaryName("dialog-textbox-long");
+	    
+	    hpFileName.add(lblName);
+	    hpFileName.add(fileName);
+	    
+	    HorizontalPanel hpLanguages = new HorizontalPanel();
+	    
+	    Label lblLanguage = new Label();
+	    lblLanguage.setStyleName("labels");
+	    lblLanguage.setText("Language: ");
+	    
+	    languageChoose = new ListBox();
+		languageChoose.setStyleName("dropdownlist");
+	    
+		for(int i = 0; i < languages.length; i++){
 			languageChoose.addItem(languages[i]);
 		}
 		
-		Button btnCreate = new Button("Create");
-		btnCreate.setStylePrimaryName("dialog-button");
-		btnCreate.addClickHandler(new ClickHandler() {
+		hpLanguages.add(lblLanguage);
+		hpLanguages.add(languageChoose);
+	    
+	    Button btnCreate = new Button("Create");
+	    btnCreate.setStylePrimaryName("dialog-button-double");
+	    btnCreate.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if (fileName.getText().length() == 0) {
-					Window.alert("Could you please mention the name of the file");
-				} else {
+				
+				if (UserID != 0) {
+					final String strFileName = fileName.getText();
 
-					language = " ";
-
-					final LoginInfo logInfo = new LoginInfo();
-
-					loadCreatePanel();
-					// set the file extension
-					switch (languageChoose.getItemText(languageChoose
-							.getSelectedIndex())) {
-					case ("Java"):
-						fileToDatabase = fileName.getText() + ".java";
-						break;
-					case ("C++"):
-						fileToDatabase = fileName.getText() + ".cpp";
-						break;
-					case ("Python"):
-						fileToDatabase = fileName.getText() + ".py";
-						break;
-					case ("C#"):
-						fileToDatabase = fileName.getText() + ".cs";
-						break;
-					}
-					// should get user's nick name
-					// add
-					// add to database query fileToDatabase
-					System.out.println("User: '" + logInfo.getNickname()
-							+ "' created file: '" + fileToDatabase + "'");
-					
-					
-					objFileService.insertFile(fileToDatabase, UserID, new AsyncCallback<Integer>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
-
-						@Override
-						public void onSuccess(Integer result) {
-							// TODO Auto-generated method stub
-							System.out.println("shistani li");
-						}
-					});
-					
-//					objFileService.insertFile(fileToDatabase, UserID,
-//							  new AsyncCallback<Integer>() {
-//							  
-//							  @Override public void onFailure(Throwable caught) {
-//							  // TODO Auto-generated method stub
-//							  Window.alert(caught.getMessage()); }
-//							  
-//							  @Override public void onSuccess(Integer fileID)
-//							  { // TODO Auto-generated method stub
-//							  
-//							  objFileService.getFiles(fileID, UserID, new
-//							  AsyncCallback<List<FileInfo>>() {
-//							  
-//							  @Override public void onFailure(Throwable caught) {
-//							  // TODO Auto-generated method stub
-//							  
-//							  }
-//							  
-//							  @Override public void onSuccess(List<FileInfo>
-//							  result) { // TODO Auto-generated method stub
-////							  loadCreateRepPanel(result, 1); 
-//								  System.out.println(result);
-//								  }
-//							  
-//							  });
-//							  
-//							  } });
-
-					dialogbox.hide();
-				}
-			}
-		});
-
-		SimplePanel holder = new SimplePanel();
-		holder.add(btnCreate);
-
-		vpDialogContent.add(fileName);
-		vpDialogContent.add(languageChoose);
-		vpDialogContent.add(holder);
-		dialogbox.setWidget(vpDialogContent);
-
-		RootPanel.get("mainContent").add(wrapper);
-		dialogbox.center();
-
-	}
-
-	public void loadCreateFolderPanel(final int parentFolderID,
-			final int repositoryID, final String Navigation, final int option) {
-
-		final HTML wrapper = new HTML(
-				"<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
-
-		dialogbox = new DialogBox(false);
-		dialogbox.setStyleName("dialog");
-
-		VerticalPanel vpDialogContent = new VerticalPanel();
-		fileName = new TextBox();
-		fileName.setStylePrimaryName("dialog-textbox");
-
-		Button btnCreate = new Button("Create");
-		btnCreate.setStylePrimaryName("dialog-button");
-		btnCreate.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-
-				objFoldService.insertFolder(fileName.getText(), parentFolderID,
-						repositoryID, new AsyncCallback<Integer>() {
+					if (strFileName == null || strFileName.equals("")) {   
+					    final DialogBox dialogboxclose = new DialogBox(false);
+					    dialogboxclose.setStyleName("dialog");
+					    
+					    VerticalPanel vpDialogContent = new VerticalPanel();
+					    
+					    HTML htmlMessage = new HTML("Please insert a file name");
+					    Button btnClose = new Button("Close");
+					    btnClose.setStylePrimaryName("dialog-button");
+					    btnClose.addClickHandler(new ClickHandler() {
 
 							@Override
-							public void onSuccess(Integer result) {
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								dialogboxclose.hide();
+							}
+							
+						});
+					
+						SimplePanel holder = new SimplePanel();
+					    holder.add(btnClose);
+
+					    vpDialogContent.add(htmlMessage);
+					    vpDialogContent.add(holder);
+					    dialogboxclose.setWidget(vpDialogContent);
+					    dialogboxclose.center();
+					} else {
+				
+						language = " ";
+						
+						final LoginInfo logInfo = new LoginInfo();
+						
+						loadCreatePanel();
+						//set the file extension
+						switch(languageChoose.getItemText(languageChoose.getSelectedIndex())){
+							case("JavaScript"):
+								fileToDatabase = fileName.getText() + ".js";
+								break;
+							case("Java"):
+								fileToDatabase = fileName.getText() + ".java";
+								break;
+							case("C++"):
+								fileToDatabase = fileName.getText() + ".cpp";
+								break;
+							case("Python"):
+								fileToDatabase = fileName.getText() + ".py";
+								break;
+							case("C#"):
+								fileToDatabase = fileName.getText() + ".cs";
+								break;
+						}
+						//should get user's nick name 
+						//add
+						//add to database query fileToDatabase
+						System.out.println("User: '" + logInfo.getNickname()+ "' created file: '" + fileToDatabase + "'");
+		
+						dialogbox.hide();
+				
+					}
+				}
+			}
+			
+		});
+	    
+	    Button btnClose = new Button("Close");
+	    btnClose.setStylePrimaryName("dialog-button");
+	    btnClose.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				RootPanel.get("mainContent").remove(wrapper);
+				dialogbox.hide();
+			}
+			
+		});
+	
+	    HorizontalPanel hpButtons = new HorizontalPanel();
+	    hpButtons.add(btnCreate);
+	    hpButtons.add(btnClose);
+
+	    vpDialogContent.add(hpFileName);
+	    vpDialogContent.add(hpLanguages);
+	    vpDialogContent.add(hpButtons);
+	    dialogbox.setWidget(vpDialogContent);
+
+	    RootPanel.get("mainContent").add(wrapper);
+	    dialogbox.center();
+		
+	}
+	
+	public void loadCreateFolderPanel(final int parentFolderID, final RepositoryInfo repository, final String Navigation, final int option) {
+		
+		final HTML wrapper = new HTML("<div class='overlay' style='overflow: visible; position: absolute; left: 0px; top: 0px;'><div class='popupContent'></div></div>");
+		   
+	    dialogbox = new DialogBox(false);
+	    dialogbox.setStyleName("dialog");
+	    
+	    VerticalPanel vpDialogContent = new VerticalPanel();
+	    vpDialogContent.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+	    
+	    HorizontalPanel hpFileName = new HorizontalPanel();
+	    
+	    Label lblName = new Label();
+	    lblName.setText("Name: ");
+	    lblName.setStyleName("labels");
+	    
+	    fileName = new TextBox();
+	    fileName.setStylePrimaryName("dialog-textbox-long");
+	    
+	    hpFileName.add(lblName);
+	    hpFileName.add(fileName);
+	     
+	    Button btnCreate = new Button("Create");
+	    btnCreate.setStylePrimaryName("dialog-button-double");
+	    btnCreate.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				if (UserID != 0) {
+					final String strFileName = fileName.getText();
+
+					if (strFileName == null || strFileName.equals("")) {   
+					    final DialogBox dialogboxclose = new DialogBox(false);
+					    dialogboxclose.setStyleName("dialog");
+					    
+					    VerticalPanel vpDialogContent = new VerticalPanel();
+					    
+					    HTML htmlMessage = new HTML("Please insert a folder name");
+					    Button btnClose = new Button("Close");
+					    btnClose.setStylePrimaryName("dialog-button");
+					    btnClose.addClickHandler(new ClickHandler() {
+
+							@Override
+							public void onClick(ClickEvent event) {
+								// TODO Auto-generated method stub
+								dialogboxclose.hide();
+							}
+							
+						});
+					
+						SimplePanel holder = new SimplePanel();
+					    holder.add(btnClose);
+
+					    vpDialogContent.add(htmlMessage);
+					    vpDialogContent.add(holder);
+					    dialogboxclose.setWidget(vpDialogContent);
+					    dialogboxclose.center();
+					} else {
+				
+						objFoldService.insertFolder(fileName.getText(), parentFolderID, repository.getRepositoryID(), new AsyncCallback<Integer>() {
+							
+							@Override
+							
+							public void onSuccess(final Integer result) {
 								// TODO Auto-generated method stub
 								RootPanel.get("mainContent").clear();
-								printRepository(repositoryID, result,
-										Navigation, option);
-								dialogbox.hide();
-							}
+								RootPanel.get("contentHeadWrapper").clear();
+								
+								objRepService.getRepository(repository.getRepositoryID(), new AsyncCallback<RepositoryInfo>() {
 
+									@Override
+									public void onFailure(Throwable caught) {
+										// TODO Auto-generated method stub
+										
+									}
+
+									@Override
+									public void onSuccess(RepositoryInfo repInfo) {
+										// TODO Auto-generated method stub
+										
+										final String strNav = "<b style='color:black'>" + repository.getName() + "<b>";
+
+										Label lblCreatedDate = new Label();
+										
+										lblCreatedDate.setText("updated on " + dateFormat.format(repInfo.getUpdatedDate()));
+										
+										String htmlContentTitle = "";
+										htmlContentTitle = "<div id='contentHead'>";
+										htmlContentTitle += "<div id='contentHeaderTitle' class='repTitle'>";
+										htmlContentTitle += "<span>" + repository.getUser().getName() + "</span> / <span id='lnkRepository' class='lnkRepTitle'></span>";
+										htmlContentTitle += "</div>";
+										htmlContentTitle += "<div class='created_date'>";
+										htmlContentTitle += lblCreatedDate.getText();
+										htmlContentTitle += "</div>";
+										htmlContentTitle += "</div>";
+
+										Anchor lnkRepository = new Anchor();
+										lnkRepository.setText(repository.getName());
+
+										lnkRepository.addClickHandler(new ClickHandler() {
+
+											@Override
+											public void onClick(ClickEvent event) {
+												// TODO Auto-generated method stub
+												RootPanel.get("mainContent").remove(1);
+												RootPanel.get("mainContent").getWidget(0).getElement().setInnerHTML(strNav);
+
+												printRepository(repository, 0, strNav, option);
+											}
+
+										});
+
+										HTMLPanel contentTitle = new HTMLPanel(htmlContentTitle);
+										contentTitle.add(lnkRepository, "lnkRepository");
+										RootPanel.get("contentHeadWrapper").add(contentTitle);
+										
+										String NavigateText = Navigation;					
+										NavigateText = NavigateText.replaceAll("black", "rgb(153,201,198)");
+										NavigateText += " / " + "<b style='color:black'>" + fileName.getText() + "<b>";
+				
+										HTMLPanel hlNavigation = new HTMLPanel(NavigateText);
+										RootPanel.get("mainContent").add(hlNavigation);
+										
+										printRepository(repository, result, NavigateText, option);
+										dialogbox.hide();
+									}
+								});
+							}
+							
 							@Override
 							public void onFailure(Throwable caught) {
 								// TODO Auto-generated method stub
-
+								
 							}
 						});
-
+					}
+				}
 			}
-
+			
 		});
+	    
+	    Button btnClose = new Button("Close");
+	    btnClose.setStylePrimaryName("dialog-button");
+	    btnClose.addClickHandler(new ClickHandler() {
 
-		SimplePanel holder = new SimplePanel();
-		holder.add(btnCreate);
+			@Override
+			public void onClick(ClickEvent event) {
+				RootPanel.get("mainContent").remove(wrapper);
+				dialogbox.hide();
+			}
+			
+		});
+	    
+	    HorizontalPanel hpButtons = new HorizontalPanel();
+	    hpButtons.add(btnCreate);
+	    hpButtons.add(btnClose);
+	
+	    vpDialogContent.add(hpFileName);
+	    vpDialogContent.add(hpButtons);
+	    dialogbox.setWidget(vpDialogContent);
 
-		vpDialogContent.add(fileName);
-		vpDialogContent.add(holder);
-		dialogbox.setWidget(vpDialogContent);
-
-		RootPanel.get("mainContent").add(wrapper);
-		dialogbox.center();
-
+	    RootPanel.get("mainContent").add(wrapper);
+	    dialogbox.center();
+	
 	}
-
+	
 	public void loadCreatePanel() {
 
 		RootPanel.get("mainContent").clear();
@@ -1247,25 +1268,14 @@ public class MainEntryPoint implements EntryPoint {
 		hpCenterLayout = new HorizontalPanel();
 
 		final TextArea codePanel = new TextArea();
-
-		// AceEditor codePanel = new AceEditor();
-		//
-		// codePanel.setWidth("600px");
-		// codePanel.setHeight("400px");
-
-		// codePanel.startEditor();
-		// codePanel.setMode(AceEditorMode.PERL);
-		// codePanel.setTheme(AceEditorTheme.TWILIGHT);
-
 		codePanel.setCharacterWidth(63);
 		codePanel.setVisibleLines(35);
-
 		codePanel.setStyleName("codePanel");
 		hpCenterLayout.add(codePanel);
 
 		final Label lblInstructions = new Label();
 		lblInstructions.setStyleName("instructions");
-		lblInstructions.setText("Press -> to search for code snippets ...");
+		lblInstructions.setText("Press CTRL to search for code snippets ...");
 		hpCenterLayout.add(lblInstructions);
 
 		codePanel.addKeyDownHandler(new KeyDownHandler() {
@@ -1273,7 +1283,7 @@ public class MainEntryPoint implements EntryPoint {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 
-				if (event.getNativeKeyCode() == KeyCodes.KEY_RIGHT
+				if (event.getNativeKeyCode() == KeyCodes.KEY_CTRL
 						&& codePanel.getSelectedText() != null
 						&& codePanel.getSelectionLength() > 3) {
 
@@ -1288,14 +1298,9 @@ public class MainEntryPoint implements EntryPoint {
 
 					}
 
-					search(languageChoose.getItemText(languageChoose
-							.getSelectedIndex())
-							+ " "
-							+ getRecommendedSite(languageChoose
-									.getItemText(languageChoose
-											.getSelectedIndex()))
-							+ codePanel.getSelectedText(), codePanel
-							.getSelectedText());
+					search(languageChoose.getItemText(languageChoose.getSelectedIndex()) + " " + getRecommendedSite(languageChoose.getItemText(languageChoose.getSelectedIndex()))
+							+ codePanel.getSelectedText(),
+							codePanel.getSelectedText());
 				} else if (event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
 					event.preventDefault();
 					event.stopPropagation();
@@ -1452,31 +1457,30 @@ public class MainEntryPoint implements EntryPoint {
 		objSectionStack.setWidth("550px");
 		objSectionStack.setStyleName("snippetContainer");
 
-		if (!snippets.isEmpty()) {			
-			// throws the exception here
-			// i think it shouldn't be forced to be 20
-			// however you need to force the stack section to be at least 20
-			for (int i = 1; i <= 20; i++) {
+		int counter = 0;
+		if (!snippets.isEmpty()) {
+			
+			int size = snippets.size() < 20 ? snippets.size() : 20;
+			for (int i = 0; i < size; i++) {
 				Snippet snippet = snippets.get(i);
-
-				HTMLFlow objSnippet = new HTMLFlow();
-				objSnippet.setStyleName("snippet");
-				objSnippet
-						.setContents("<pre><code style='font-size:12px' class='"
-								+ snippet.getLanguage()
-								+ "'>"
-								+ snippet.toString() + "</code></pre>");
-
-				SectionStackSection objSectionStackSection = new SectionStackSection(
-						"Snippet " + i);
-				objSectionStackSection.addItem(objSnippet);
-				objSectionStack.addSection(objSectionStackSection);
-
-				if (i == 1)
-					objSectionStackSection.setExpanded(true);
-				else
-					objSectionStackSection.setExpanded(false);
-
+				
+				if(!snippet.toString().equals("") && snippet.toString() != null) {
+					HTMLFlow objSnippet = new HTMLFlow();
+					objSnippet.setStyleName("snippet");
+					objSnippet.setContents(snippet.getText() + "\n\n" + "<i><b>Taken from: " + snippet.getUrl() + "</i></b>");
+	
+					SectionStackSection objSectionStackSection = new SectionStackSection(
+							"Snippet " + (counter+1));
+					objSectionStackSection.addItem(objSnippet);
+					objSectionStack.addSection(objSectionStackSection);
+	
+					if (counter == 0)
+						objSectionStackSection.setExpanded(true);
+					else
+						objSectionStackSection.setExpanded(false);
+					
+					counter++;
+				}
 			}
 		} else {
 

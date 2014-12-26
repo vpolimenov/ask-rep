@@ -1,15 +1,15 @@
 package ask_rep.client;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 @SuppressWarnings("serial")
 public class RepositoryInfo implements Serializable {
 	
 	private int repositoryID;
 	private String name;
-	private Date createdDate;
-	private Date updatedDate;	
+	private Timestamp createdDate;
+	private Timestamp updatedDate;	
 	private UserInfo user;
 	
 	public int getRepositoryID() {
@@ -24,16 +24,16 @@ public class RepositoryInfo implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getCreatedDate() {
+	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
 	}
-	public Date getUpdatedDate() {
+	public Timestamp getUpdatedDate() {
 		return updatedDate;
 	}
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 	public UserInfo getUser() {

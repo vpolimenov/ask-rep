@@ -6,6 +6,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public interface FileServiceAsync {
-	public void insertFile(String Name, int UserID, AsyncCallback<Integer> asyncCallback);
 	public void getFiles(int repositoryID, int folderID, AsyncCallback<List<FileInfo>> asyncCallback);
 }

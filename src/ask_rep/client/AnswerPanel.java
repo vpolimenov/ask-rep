@@ -17,6 +17,9 @@ public final class AnswerPanel extends TextArea implements Serializable{
 	TabPanel containingPane;
 	final TextArea codePanel = new TextArea();
 
+	// ProgressEvent progressBar;
+	// int progressBarIndex = -1;
+
 	public AnswerPanel() {
 
 	}
@@ -25,6 +28,7 @@ public final class AnswerPanel extends TextArea implements Serializable{
 			int height) {
 
 		this.mainEntryPoint = mainEntryPoint;
+		// setLayout(new BorderLayout());
 
 		containingPane = new TabPanel();
 
@@ -32,10 +36,23 @@ public final class AnswerPanel extends TextArea implements Serializable{
 		codePanel.setVisibleLines(35);
 
 		containingPane.setPixelSize(width, height);
+		// containingPane.setPreferredSize(new Dimension(width, height));
+		// add(containingPane, BorderLayout.CENTER);
+		// containingPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
 	}
 
+	// protected JComponent generatePan(String panelName) {
+	// JPanel panel = new JPanel(new FlowLayout(), false);
+	// JLabel panelHeader = new JLabel(panelName);
+	// panelHeader.setHorizontalAlignment(JLabel.CENTER);
+	// panel.setLayout(new GridLayout());
+	// panel.add(panelHeader);
+	// return panel;
+	// }
+
 	public void clear() {
-		
+		// containingPane.removeAll();
 	}
 
 	public void addAnswers(ArrayList<Snippet> snippets) {
@@ -51,10 +68,18 @@ public final class AnswerPanel extends TextArea implements Serializable{
 				continue;
 
 			TextArea pane = new TextArea();
+			// pane.setFont(new Font("Courier New", Font.PLAIN, 12));
 			pane.setText(snippet.toString());
 			containingPane.add(pane,
 					"Snippet " + snippetID + " R: " + snippet.getRating());
 			snippetID++;
 		}
 	}
+
+	// public void printError(String errorText) {
+	// JTextPane pane = new JTextPane();
+	// pane.setText(errorText);
+	// containingPane.addTab("Link Error", pane);
+	//
+	// }
 }
