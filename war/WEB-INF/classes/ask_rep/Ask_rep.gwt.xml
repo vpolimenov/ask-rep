@@ -21,7 +21,7 @@
 
  <inherits name="com.smartgwt.SmartGwt"/>
  <inherits name="com.smartclient.theme.enterpriseblue.EnterpriseBlue"/>
-
+ <inherits name="org.moxieapps.gwt.uploader.Uploader"/>
     
   <set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
   <!-- Specify the app entry point class.                         -->

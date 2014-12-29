@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.Folder;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import ask_rep.client.FolderInfo;
@@ -67,13 +69,17 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 				
 				objRepPrepStatement.executeUpdate();
 				
-				if(ParentFolderID > 0) {
+				while(ParentFolderID > 0) {
+					
 					String strFoldStatement = "UPDATE folders SET dateupdated = ? WHERE folderID = ?";
 					PreparedStatement objFoldPrepStatement = myConnection.prepareStatement(strFoldStatement);
 					objFoldPrepStatement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
 					objFoldPrepStatement.setInt(2, ParentFolderID);			
 					
 					objFoldPrepStatement.executeUpdate();
+					
+					//update date for all sub-folders
+					ParentFolderID = getFolder(ParentFolderID).getParentFolderID();
 				}
 			}
 			

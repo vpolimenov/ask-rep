@@ -35,7 +35,7 @@ public class SearchServiceImpl extends RemoteServiceServlet implements SearchSer
 
     public ArrayList<String> getSearchResults() throws IOException {
         if (queryString == "") throw new IllegalStateException("Must set query string");
-        
+
         ArrayList<String> urlResultList = new ArrayList<>();
         queryString = queryString.replaceAll(" ", "+");
 

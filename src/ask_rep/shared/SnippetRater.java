@@ -6,7 +6,7 @@ import java.util.HashMap;
 @SuppressWarnings("serial")
 public class SnippetRater implements Serializable {
 
-    public static String[] javaCodeTags, cppCodeTags, pythonCodeTags, csharpCodeTags;
+    public static String[] javaCodeTags, cppCodeTags, pythonCodeTags, csharpCodeTags, jsCodeTags;
 
     public static HashMap<String, String[]> codeTags;
 
@@ -130,12 +130,14 @@ public class SnippetRater implements Serializable {
         javaCodeTags = new String[]{"System.out.print", "this", "super", "final ","package ","import ",".class"};
         cppCodeTags = new String[]{"auto ", "register", "sizeof", "const ","using ","include","struct "};
         pythonCodeTags = new String[]{"def ", "self(" , "self ", "self.","from ","import "};
-        csharpCodeTags = new String[]{"base ", "console", "const ","using ", "type ","var ","dynamic ","struct "};
+        csharpCodeTags = new String[]{"abstract", "break", "namespace", "static", "global", "interal", "foreach", "this"};
+        jsCodeTags = new String[]{"document ", "function", "getElementById ","var ", "length ","$ ","click ","ajax"};
 
         codeTags.put("Java", javaCodeTags);
         codeTags.put("C++", cppCodeTags);
         codeTags.put("Python", pythonCodeTags);
-        codeTags.put("C#", csharpCodeTags);
+        codeTags.put("CSharp", csharpCodeTags);
+        codeTags.put("JavaScript", jsCodeTags);
         codeTags.put("Unknown", new String[]{});
     }
 }
