@@ -6,7 +6,6 @@ import java.util.Collections;
 
 import ask_rep.shared.Snippet;
 
-import com.google.gwt.event.dom.client.ProgressEvent;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 

@@ -43,7 +43,7 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 			}
 
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
 
 		return repositoryID;
@@ -85,7 +85,7 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 			}
 
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
 
 		return objRepInfo;
@@ -131,7 +131,7 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 			}
 
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
 
 		return lstRepositories;
@@ -191,7 +191,7 @@ public class RepositoryServiceImpl extends RemoteServiceServlet implements Repos
 			}
 
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
 
 		return lstRepositories;

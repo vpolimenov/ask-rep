@@ -14,7 +14,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class SearchServiceImpl extends RemoteServiceServlet implements SearchService{
 
     private final String searchEngine = "https://www.googleapis.com/customsearch/v1?";
-    private final String API_Key =  "AIzaSyC8li-6nHMesNzk9gxeeLIc0_WM-8oIzFY";
+    private final String API_Key =  "AIzaSyCn76oUc7J19OExFNUPtF5e03Fh5VK5c1c";
     private final String cx_Key = "014207427954762379102:cj7uilhje_0";
     //011528944153720704846:3Aqrk4wd5jqfu
     private final String outputFormat = "json";

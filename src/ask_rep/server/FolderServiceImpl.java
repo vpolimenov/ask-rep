@@ -84,7 +84,7 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 			}
 			
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
 
 		return folderID;
@@ -132,7 +132,7 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 			}
 			
 		} catch(SQLException e) {
-			
+			e.printStackTrace();
 		}
 		
 		return lstFolders;
@@ -164,7 +164,7 @@ public class FolderServiceImpl extends RemoteServiceServlet implements FolderSer
 			}
 			
 		} catch(SQLException e) {
-			
+			e.printStackTrace();
 		}
 		
 		return objFolderInfo;

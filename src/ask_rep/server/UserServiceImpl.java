@@ -23,7 +23,6 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 		int returnID = 0;
 		
 		try {
-			
 			String objStatement = "INSERT INTO users (name, email) VALUES( ? , ? )";
 	        PreparedStatement objPrepStatement = myConnection.prepareStatement(objStatement, Statement.RETURN_GENERATED_KEYS);
 	        objPrepStatement.setString(1, Name);
@@ -37,7 +36,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 	        }
         
 		}catch(SQLException e)  {
-			
+			e.printStackTrace();
 		}
 		
 		return returnID;
@@ -61,7 +60,7 @@ public class UserServiceImpl extends RemoteServiceServlet implements UserService
 			}
 			
 		} catch(SQLException e) {
-			
+			e.printStackTrace();
 		}
 		
 		return count;

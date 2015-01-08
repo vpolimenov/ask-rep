@@ -974,7 +974,7 @@ public class MainEntryPoint implements EntryPoint {
 		});
 
 		final TextArea codePanel = new TextArea();
-		codePanel.setCharacterWidth(139);
+		codePanel.setWidth("995px");
 		codePanel.setVisibleLines(35);
 		codePanel.setEnabled(false);
 		codePanel.setStyleName("codePanel");
@@ -1012,7 +1012,7 @@ public class MainEntryPoint implements EntryPoint {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				
+				Window.alert(caught.getMessage());
 			}
 
 			@Override
@@ -1565,14 +1565,14 @@ public class MainEntryPoint implements EntryPoint {
 		hpCenterLayout = new HorizontalPanel();
 
 		final TextArea codePanel = new TextArea();
-		codePanel.setCharacterWidth(63);
+		codePanel.setWidth("445px");
 		codePanel.setVisibleLines(35);
 		codePanel.setStyleName("codePanel");
 		hpCenterLayout.add(codePanel);
 
 		final Label lblInstructions = new Label();
 		lblInstructions.setStyleName("instructions");
-		lblInstructions.setText("Press SHIFT to search for code snippets ...");
+		lblInstructions.setText("Please highlight the phrase/word to search for code snippets and press SHIFT...");
 		hpCenterLayout.add(lblInstructions);
 
 		
@@ -1851,12 +1851,7 @@ public class MainEntryPoint implements EntryPoint {
 																						// the
 																						// server
 																						// responds
-																						if (result
-																								.isEmpty()) {
-																							Window.alert("No result can be found...");
-																						} else {
-																							displaySnippets(result);
-																						}
+																						displaySnippets(result);
 																					}
 																				});
 																	}

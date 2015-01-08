@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <application>rare-habitat-725</application>
-  <version>1</version>
+  <application>future-spot-815</application>
+  <version>2</version>
 
   <!--
     Allows App Engine to send multiple requests to one instance in parallel:
@@ -24,11 +24,11 @@
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
      
 	<property name="db" value="ask_rep" />
-	<!-- Cloud IP: 173.194.87.17 -->
-	<property name="instance" value="127.0.0.1" />
+	<!-- Cloud IP: instance 173.194.106.27 -->
+	<property name="instance" value="173.194.106.27" />
 	<property name="username" value="root" />
-	<!-- Cloud Password: "" -->
-	<property name="password" value="root" />
+	<!-- Localhost: root, Live: qwerty18 -->
+	<property name="password" value="qwerty18" />
 	
   </system-properties>
 

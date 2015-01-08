@@ -1,9 +1,5 @@
 package ask_rep.server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +9,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import ask_rep.client.FileInfo;
@@ -76,7 +71,7 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 			}
 			
 		} catch(SQLException e) {
-			
+			e.printStackTrace();
 		}
 		
 		return lstFiles;
@@ -113,7 +108,7 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 			}
 			
 		} catch(SQLException e) {
-			
+			e.printStackTrace();
 		}
 		
 		return objFileInfo;
@@ -178,7 +173,7 @@ public class FileServiceImpl extends RemoteServiceServlet implements FileService
 			}
 			
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		}
 
 		return fileID;
