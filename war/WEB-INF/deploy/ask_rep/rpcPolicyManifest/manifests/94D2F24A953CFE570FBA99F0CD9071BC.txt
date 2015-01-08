@@ -1,2 +1,0 @@
-serviceClass: ask_rep.client.FolderService
-path: E343675FDC85A1CBE7DF52A6EA03196C.gwt.rpc

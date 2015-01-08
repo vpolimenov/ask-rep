@@ -1,2 +1,0 @@
-serviceClass: ask_rep.client.GreetingService
-path: A563C4CBB40D161282729EF5EA43DC5C.gwt.rpc

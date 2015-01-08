@@ -1,2 +1,0 @@
-serviceClass: ask_rep.client.RepositoryService
-path: B44A2590AA65995D39F09E89F45B0FAC.gwt.rpc

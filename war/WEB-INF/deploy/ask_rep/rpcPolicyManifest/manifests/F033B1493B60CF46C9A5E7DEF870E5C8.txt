@@ -1,2 +1,0 @@
-serviceClass: ask_rep.client.FileService
-path: A1174557ED1A25F3DAE386F36659F447.gwt.rpc

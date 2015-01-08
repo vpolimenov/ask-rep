@@ -1,10 +1,2 @@
 # Module ask_rep
 # RPC service class, partial path of RPC policy file
-ask_rep.client.LoginService, 818348AA8FF174068C94A80132579A05.gwt.rpc
-ask_rep.client.SearchService, B2A2073D8F9FF180BE93A7D9A1624685.gwt.rpc
-ask_rep.client.RepositoryService, DA86649D56298ED79347158EBAF6B845.gwt.rpc
-ask_rep.client.SessionService, 342734A8FB338525A14E07E3492E4978.gwt.rpc
-ask_rep.client.FileService, 603B9E6B48489783A9E29C18BEC56D37.gwt.rpc
-ask_rep.client.UserService, 540FDAB42C854B5BC173CC6DC77746E7.gwt.rpc
-ask_rep.client.CodeExtractionService, 98ACFC26B5B6B66FB45D84968A356578.gwt.rpc
-ask_rep.client.FolderService, BCA86E4C14C4BA021983A8C328806118.gwt.rpc
