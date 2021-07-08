@@ -56,7 +56,7 @@ As you enter the application, immediately it will list you all the repositories 
 
 Alternatively an authenticated user can view all repositories that are created only by other authenticated users. Since they can already view their own repositories whilst creating/uploading files we decided to remove the duplications and suggest better repositories to them.
 
-Search functionality
+## Search functionality
 
 We implemented a functionality where users can be able to search for code snippets through the Internet using Google's Custom Search Engine. Whilst users are creating files, if they get stuck and don't know how to write a specific function, they can send a request to Google and retrieve the code snippet.
 
